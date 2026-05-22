@@ -11,6 +11,18 @@ export const Header: GlobalConfig = {
   },
   fields: [
     {
+      name: 'showSearch',
+      type: 'checkbox',
+      defaultValue: true,
+      label: 'Show search bar',
+    },
+    {
+      name: 'showCart',
+      type: 'checkbox',
+      defaultValue: true,
+      label: 'Show cart button',
+    },
+    {
       name: 'navItems',
       type: 'array',
       fields: [
@@ -19,6 +31,7 @@ export const Header: GlobalConfig = {
         }),
       ],
       maxRows: 6,
+      minRows: 4,
     },
   ],
 }

@@ -3,6 +3,7 @@
 import type { Header } from '@/payload-types'
 
 import { CMSLink } from '@/components/Link'
+import { Search } from '@/components/Search'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -53,10 +54,13 @@ export function MobileMenu({ menu }: Props) {
 
       <SheetContent side="left" className="px-4">
         <SheetHeader className="px-0 pt-4 pb-0">
-          <SheetTitle>My Store</SheetTitle>
-
+          <SheetTitle>Menu</SheetTitle>
           <SheetDescription />
         </SheetHeader>
+
+        <div className="pt-4 pb-2">
+          <Search />
+        </div>
 
         <div className="py-4">
           {menu?.length ? (

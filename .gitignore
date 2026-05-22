@@ -41,3 +41,8 @@ next-env.d.ts
 
 public/media
 
+# next-agents-md
+.next-docs/
+.opencode
+AGENTS.md
+casafood.db

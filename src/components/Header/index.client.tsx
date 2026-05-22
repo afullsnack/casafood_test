@@ -2,6 +2,7 @@
 import { CMSLink } from '@/components/Link'
 import { Cart } from '@/components/Cart'
 import { OpenCartButton } from '@/components/Cart/OpenCart'
+import { Search } from '@/components/Search'
 import Link from 'next/link'
 import React, { Suspense } from 'react'
 
@@ -21,46 +22,58 @@ export function HeaderClient({ header }: Props) {
   const pathname = usePathname()
 
   return (
-    <div className="relative z-20 border-b">
-      <nav className="flex items-center md:items-end justify-between container pt-2">
-        <div className="block flex-none md:hidden">
-          <Suspense fallback={null}>
-            <MobileMenu menu={menu} />
-          </Suspense>
-        </div>
-        <div className="flex w-full items-end justify-between">
-          <div className="flex w-full items-end gap-6 md:w-1/3">
-            <Link className="flex w-full items-center justify-center pt-4 pb-4 md:w-auto" href="/">
-              <LogoIcon className="w-6 h-auto" />
-            </Link>
-            {menu.length ? (
-              <ul className="hidden gap-4 text-sm md:flex md:items-center">
-                {menu.map((item) => (
-                  <li key={item.id}>
-                    <CMSLink
-                      {...item.link}
-                      size={'clear'}
-                      className={cn('relative navLink', {
-                        active:
-                          item.link.url && item.link.url !== '/'
-                            ? pathname.includes(item.link.url)
-                            : false,
-                      })}
-                      appearance="nav"
-                    />
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </div>
-
-          <div className="flex justify-end md:w-1/3 gap-4">
-            <Suspense fallback={<OpenCartButton />}>
-              <Cart />
+    <header className="relative z-20 border-b">
+      <nav className="container">
+        <div className="flex items-center justify-between py-3 md:py-4">
+          <div className="flex items-center md:hidden">
+            <Suspense fallback={null}>
+              <MobileMenu menu={menu} />
             </Suspense>
           </div>
+
+          <Link className="flex items-center" href="/">
+            <LogoIcon className="w-8 h-auto" />
+          </Link>
+
+          <div className="hidden md:flex flex-1 justify-center px-8">
+            {header.showSearch && (
+              <div className="w-full max-w-md">
+                <Search />
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center gap-4">
+            {header.showCart && (
+              <Suspense fallback={<OpenCartButton />}>
+                <Cart />
+              </Suspense>
+            )}
+          </div>
         </div>
+
+        {menu.length ? (
+          <div className="hidden border-t md:block">
+            <ul className="flex items-center justify-center gap-8 py-3">
+              {menu.map((item) => (
+                <li key={item.id}>
+                  <CMSLink
+                    {...item.link}
+                    size={'clear'}
+                    className={cn('relative navLink text-sm font-medium', {
+                      active:
+                        item.link.url && item.link.url !== '/'
+                          ? pathname.includes(item.link.url)
+                          : false,
+                    })}
+                    appearance="nav"
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </nav>
-    </div>
+    </header>
   )
 }
