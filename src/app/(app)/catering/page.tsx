@@ -1,6 +1,10 @@
-import React from 'react'
+'use client'
+
+import React, { useState } from 'react'
 
 import { ContentWithMediaBlock } from '@/blocks/ContentWithMedia/Component'
+import { CateringFormModal } from '@/components/CateringFormModal'
+import { useNavigationGuard } from '@/hooks/use-navigation-guard'
 
 const services = [
   {
@@ -49,6 +53,10 @@ const inquiryFlow = [
 ]
 
 export default function CateringPage() {
+  const [selectedService, setSelectedService] = useState<string | null>(null)
+
+  useNavigationGuard(true, 'You have unsaved changes')
+
   return (
     <>
       <div className="pt-16 pb-24">
@@ -63,7 +71,12 @@ export default function CateringPage() {
         <section className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {services.map((service, index) => (
-              <ContentWithMediaBlock key={index} {...service} blockType="contentWithMedia" />
+              <ContentWithMediaBlock
+                key={index}
+                {...service}
+                blockType="contentWithMedia"
+                onAction={() => setSelectedService(service.title)}
+              />
             ))}
           </div>
         </section>
@@ -87,6 +100,14 @@ export default function CateringPage() {
           </div>
         </section>
       </div>
+
+      <CateringFormModal
+        open={!!selectedService}
+        onOpenChange={(open) => {
+          if (!open) setSelectedService(null)
+        }}
+        serviceName={selectedService || ''}
+      />
     </>
   )
 }
