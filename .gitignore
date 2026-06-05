@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+node_modules
 /.pnp
 .pnp.js
 
@@ -46,3 +47,4 @@ public/media
 .opencode
 AGENTS.md
 casafood.db
+casa.db

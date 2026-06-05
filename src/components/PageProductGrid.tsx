@@ -24,12 +24,10 @@ export function PageProductGrid({ context, products, title }: Props) {
   const { showPrompt, handleGoToCheckout, handleLeaveAnyway, handleCancel } =
     useCartExitGuard(context)
 
-  // useEffect(() => {
-  //   console.log(`Page Context`, { context })
-  //   setPageContext((_prev) => {
-  //     return context
-  //   })
-  // }, [context, setPageContext])
+  useEffect(() => {
+    console.log(`Page Context`, { context })
+    setPageContext(context)
+  }, [context, setPageContext])
 
   return (
     <div className="pt-16 pb-24">
