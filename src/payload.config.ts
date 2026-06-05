@@ -21,6 +21,7 @@ import { Users } from '@/collections/Users'
 import { Footer } from '@/globals/Footer'
 import { Header } from '@/globals/Header'
 import { plugins } from './plugins'
+import { migrations } from './migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -43,6 +44,10 @@ export default buildConfig({
       url: process.env.DATABASE_URL || '',
       authToken: process.env.DATABASE_AUTH_TOKEN,
     },
+    // Auto-run migrations when Payload initializes in production (`next start`).
+    // In dev, the adapter pushes the schema directly; in production push is disabled,
+    // so without this a fresh database has no tables and every page 500s.
+    prodMigrations: migrations,
   }),
   editor: lexicalEditor({
     features: () => {

@@ -1,9 +1,9 @@
-import * as migrations_20260531_add_page_fields from './20260531_add_page_fields'
+import * as migration_20260605_190622_initial from './20260605_190622_initial';
 
 export const migrations = [
   {
-    up: migrations_20260531_add_page_fields.up,
-    down: migrations_20260531_add_page_fields.down,
-    name: '20260531_182007',
+    up: migration_20260605_190622_initial.up,
+    down: migration_20260605_190622_initial.down,
+    name: '20260605_190622_initial'
   },
-]
+];
