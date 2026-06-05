@@ -106,7 +106,7 @@ export default function HomePage() {
         <section className="container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 px-4">
             {experiences.map((ex, i) => (
-              <Link href={ex.redirect} prefetch>
+              <Link href={ex.redirect} prefetch key={ex.title + '-' + i}>
                 <div
                   key={`experiences-item-${i + 1}`}
                   className="w-full flex flex-col items-start gap-3 rounded-xl overflow-hidden"

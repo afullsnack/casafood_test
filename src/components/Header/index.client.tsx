@@ -29,7 +29,7 @@ export function HeaderClient({ header }: Props) {
     <header className="relative z-20 border-b">
       <ConfectionLeafs className="w-50 h-auto absolute -top-5 xs:left-6 md:right-6" />
       <ConfectionLeafs className="hidden md:block w-64 h-auto absolute bottom-6 left-6" />
-      <nav className="container">
+      <nav className="container z-50">
         <div className="flex items-center justify-between py-3 md:py-4">
           {/*<div className="flex items-center md:hidden">
             <Suspense fallback={null}>
@@ -37,7 +37,7 @@ export function HeaderClient({ header }: Props) {
             </Suspense>
           </div>*/}
 
-          <Link className="flex items-center" href="/">
+          <Link className="flex items-center z-50" href="/">
             <CasaBrandLogo className="w-12 h-auto" />
           </Link>
 
