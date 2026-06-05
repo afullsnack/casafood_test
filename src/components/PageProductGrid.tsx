@@ -23,16 +23,23 @@ export function PageProductGrid({ context, products, title }: Props) {
   const { setPageContext } = usePageCart()
   const { showPrompt, handleGoToCheckout, handleLeaveAnyway, handleCancel } =
     useCartExitGuard(context)
+  const _showPrompt = useRef(showPrompt)
 
   useEffect(() => {
     console.log(`Page Context`, { context })
-    setPageContext(context)
+    setPageContext((_prev) => {
+      if (_prev !== context) {
+        _showPrompt.current = true
+      }
+
+      return context
+    })
   }, [context, setPageContext])
 
   return (
     <div className="pt-16 pb-24">
       <CartExitGuard
-        open={showPrompt}
+        open={_showPrompt.current || showPrompt}
         onGoToCheckout={handleGoToCheckout}
         onLeaveAnyway={handleLeaveAnyway}
         onCancel={handleCancel}

@@ -283,7 +283,5 @@ export function PageCartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [pageCart, addPageItem, removePageItem, clearPageCart, isLoading, pageContext])
 
-  setPageContext((_prev) => _prev)
-
   return <PageCartContext.Provider value={value}>{children}</PageCartContext.Provider>
 }
