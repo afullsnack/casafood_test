@@ -9,6 +9,7 @@ import {
 import PageTemplate, { generateMetadata } from './[slug]/page'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 const processes: Array<{
   title: string
@@ -46,42 +47,49 @@ const experiences: Array<{
   description: string
   extra: string
   imgUrl: string
+  redirect: string
 }> = [
   {
     title: 'Food Hub',
     description: 'Buy quality food items, ingredients and everyday kitchen essentials.',
     extra: 'Explore',
     imgUrl: '/Experiences/Food-Hub.jpg',
+    redirect: '/food-hub',
   },
   {
     title: 'Catering Services',
     description: 'Indoor and outdoor catering for weddings, offices and private events.',
     extra: 'Learn More',
     imgUrl: '/Experiences/Catering-Service.jpg',
+    redirect: '/catering',
   },
   {
     title: 'Bulk Orders',
     description: 'Large quantity meals for schools, offices and private orders.',
     extra: 'Order Now',
     imgUrl: '/Experiences/Bulk-Orders.jpg',
+    redirect: '/bulk-order',
   },
   {
     title: 'Restaurant',
     description: 'Freshly prepared meals in a warm dining atmosphere.',
     extra: 'View Menu',
     imgUrl: '/Experiences/Restaurant.jpg',
+    redirect: '/restaurant',
   },
   {
     title: 'Pay Small Small',
     description: 'Flexible payment options for larger food and catering requests.',
     extra: 'Get Started',
     imgUrl: '/Experiences/Pay-Small-Small.jpg',
+    redirect: '/food-hub',
   },
   {
     title: 'Plan Your Event',
     description: 'Let Casa handle your next celebration or corporate experience.',
     extra: 'Get Proposal',
     imgUrl: '/Experiences/Plan-Your-Events.jpg',
+    redirect: '/catering',
   },
 ]
 
@@ -98,20 +106,22 @@ export default function HomePage() {
         <section className="container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 px-4">
             {experiences.map((ex, i) => (
-              <div
-                key={`experiences-item-${i + 1}`}
-                className="w-full flex flex-col items-start gap-3 rounded-xl overflow-hidden"
-              >
-                <img src={ex.imgUrl} className="object-cover aspect-video w-full" />
-                <h1 className="font-semibold text-center">{ex.title}</h1>
-                <p className="font-extralight text-balance">{ex.description}</p>
-                <div className="flex items-center justify-start gap-3">
-                  <span>{ex.extra}</span>
-                  <div className="p-2 bg-[#3A4A1E]/40 rounded-full text-white">
-                    <ArrowRight className="size-4 " />
+              <Link href={ex.redirect} prefetch>
+                <div
+                  key={`experiences-item-${i + 1}`}
+                  className="w-full flex flex-col items-start gap-3 rounded-xl overflow-hidden"
+                >
+                  <img src={ex.imgUrl} className="object-cover aspect-video w-full" />
+                  <h1 className="font-semibold text-center">{ex.title}</h1>
+                  <p className="font-extralight text-balance">{ex.description}</p>
+                  <div className="flex items-center justify-start gap-3">
+                    <span>{ex.extra}</span>
+                    <div className="p-2 bg-[#3A4A1E]/40 rounded-full text-white">
+                      <ArrowRight className="size-4 " />
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </section>
@@ -146,9 +156,9 @@ export default function HomePage() {
       </div>
 
       <div className="relative mt-18 h-110.5 flex flex-col items-center justify-center bg-[url('/Landing-CTA.jpg')]">
-        <div className="absolute inset-0 bg-accent/90 bg-linear-30 fron-[#4A5A2A99] to-[#3A4A1ECC]" />
+        <div className="absolute inset-0 bg-linear-30 from-[#4A5A2A99] to-[#3A4A1ECC]" />
         <div className="z-50 max-w-full md:max-w-xl flex flex-col items-center justify-center gap-4">
-          <h4 className="text-primary text-3xl md:text-4xl font-semibold">
+          <h4 className="text-primary-foreground dark:text-primary text-3xl md:text-4xl font-semibold">
             Let's plan your next event
           </h4>
           <span className="text-xl font-extralight text-white text-center max-w-sm text-balance">

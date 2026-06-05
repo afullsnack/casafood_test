@@ -60,9 +60,11 @@ function CateringPage() {
   return (
     <>
       <div className="pt-16 pb-24">
-        <section className="container mb-16 text-center">
-          <h1 className="text-3xl font-semibold mb-4">Choose your Catering Service</h1>
-          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl text-center">
+        <section className="container mb-16 flex flex-col items-center">
+          <h1 className="text-3xl font-semibold mb-4 text-balance text-center">
+            Choose your Catering Service
+          </h1>
+          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl text-center text-balance">
             Whether it&apos;s an intimate gathering or a grand celebration — Casa has the right
             service for you.
           </p>
