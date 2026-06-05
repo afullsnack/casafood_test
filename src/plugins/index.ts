@@ -4,6 +4,7 @@ import { Plugin } from 'payload'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
 import { ecommercePlugin } from '@payloadcms/plugin-ecommerce'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 
 import { stripeAdapter } from '@payloadcms/plugin-ecommerce/payments/stripe'
 
@@ -142,5 +143,18 @@ export const plugins: Plugin[] = [
     products: {
       productsCollectionOverride: ProductsCollection,
     },
+  }),
+  // Media uploads must not touch the local filesystem in production: Vercel's
+  // serverless filesystem is read-only (only /tmp is writable), so writing to
+  // `public/media` throws and breaks uploads/seeding. When BLOB_READ_WRITE_TOKEN
+  // is present (set automatically by a Vercel Blob store) uploads go to Vercel
+  // Blob; without it the plugin disables itself and falls back to local disk for
+  // local development.
+  vercelBlobStorage({
+    enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+    collections: {
+      media: true,
+    },
+    token: process.env.BLOB_READ_WRITE_TOKEN,
   }),
 ]
