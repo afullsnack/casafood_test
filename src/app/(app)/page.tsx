@@ -51,37 +51,37 @@ const experiences: Array<{
     title: 'Food Hub',
     description: 'Buy quality food items, ingredients and everyday kitchen essentials.',
     extra: 'Explore',
-    imgUrl: '/media/Experiences/Food-Hub.jpg',
+    imgUrl: '/Experiences/Food-Hub.jpg',
   },
   {
     title: 'Catering Services',
     description: 'Indoor and outdoor catering for weddings, offices and private events.',
     extra: 'Learn More',
-    imgUrl: '/media/Experiences/Catering-Service.jpg',
+    imgUrl: '/Experiences/Catering-Service.jpg',
   },
   {
     title: 'Bulk Orders',
     description: 'Large quantity meals for schools, offices and private orders.',
     extra: 'Order Now',
-    imgUrl: '/media/Experiences/Bulk-Orders.jpg',
+    imgUrl: '/Experiences/Bulk-Orders.jpg',
   },
   {
     title: 'Restaurant',
     description: 'Freshly prepared meals in a warm dining atmosphere.',
     extra: 'View Menu',
-    imgUrl: '/media/Experiences/Restaurant.jpg',
+    imgUrl: '/Experiences/Restaurant.jpg',
   },
   {
     title: 'Pay Small Small',
     description: 'Flexible payment options for larger food and catering requests.',
     extra: 'Get Started',
-    imgUrl: '/media/Experiences/Pay-Small-Small.jpg',
+    imgUrl: '/Experiences/Pay-Small-Small.jpg',
   },
   {
     title: 'Plan Your Event',
     description: 'Let Casa handle your next celebration or corporate experience.',
     extra: 'Get Proposal',
-    imgUrl: '/media/Experiences/Plan-Your-Events.jpg',
+    imgUrl: '/Experiences/Plan-Your-Events.jpg',
   },
 ]
 
