@@ -28,6 +28,7 @@ export function PageProductGrid({ context, products, title }: Props) {
   useEffect(() => {
     console.log(`Page Context`, { context })
     setPageContext((_prev) => {
+      console.log(`Page Context prev`, { _prev, context })
       if (_prev !== context) {
         _showPrompt.current = true
       }

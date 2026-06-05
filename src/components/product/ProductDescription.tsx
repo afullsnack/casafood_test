@@ -9,6 +9,7 @@ import React, { Suspense } from 'react'
 import { VariantSelector } from './VariantSelector'
 import { useCurrency } from '@payloadcms/plugin-ecommerce/client/react'
 import { StockIndicator } from '@/components/product/StockIndicator'
+import { PageAddToCart } from '../Cart/PageAddToCart'
 
 export function ProductDescription({ product }: { product: Product }) {
   const { currency } = useCurrency()
@@ -84,7 +85,7 @@ export function ProductDescription({ product }: { product: Product }) {
 
       <div className="flex items-center justify-between">
         <Suspense fallback={null}>
-          <AddToCart product={product} />
+          <PageAddToCart product={product} />
         </Suspense>
       </div>
     </div>

@@ -18,7 +18,7 @@ export function PageAddToCart({ product }: Props) {
   const addToCart = useCallback(
     (e: React.FormEvent<HTMLButtonElement>) => {
       e.preventDefault()
-      addPageItem({ product: String(product.id) }).then(() => {
+      addPageItem({ product: product }).then(() => {
         toast.success('Item added to cart.')
       })
     },
