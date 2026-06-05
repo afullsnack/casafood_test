@@ -3,6 +3,7 @@ import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
 import { CarouselBlock } from '@/blocks/Carousel/Component'
 import { ContentBlock } from '@/blocks/Content/Component'
+import { ContentWithMediaBlock } from '@/blocks/ContentWithMedia/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import { ThreeItemGridBlock } from '@/blocks/ThreeItemGrid/Component'
@@ -16,6 +17,7 @@ const blockComponents = {
   banner: BannerBlock,
   carousel: CarouselBlock,
   content: ContentBlock,
+  contentWithMedia: ContentWithMediaBlock,
   cta: CallToActionBlock,
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
@@ -36,7 +38,7 @@ export const RenderBlocks: React.FC<{
           const { blockName, blockType } = block
 
           if (blockType && blockType in blockComponents) {
-            const Block = blockComponents[blockType]
+            const Block = blockComponents[blockType as keyof typeof blockComponents]
 
             if (Block) {
               return (

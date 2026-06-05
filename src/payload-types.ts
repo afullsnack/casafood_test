@@ -266,6 +266,7 @@ export interface Order {
 export interface Product {
   id: number;
   title: string;
+  page?: ('food-hub' | 'restaurant' | 'bulk-order') | null;
   description?: {
     root: {
       type: string;
@@ -978,6 +979,7 @@ export interface Cart {
   status?: ('active' | 'purchased' | 'abandoned') | null;
   subtotal?: number | null;
   currency?: 'USD' | null;
+  pageContext?: ('food-hub' | 'restaurant' | 'bulk-order') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1646,6 +1648,7 @@ export interface VariantOptionsSelect<T extends boolean = true> {
  */
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
+  page?: T;
   description?: T;
   gallery?:
     | T
@@ -1702,6 +1705,7 @@ export interface CartsSelect<T extends boolean = true> {
   status?: T;
   subtotal?: T;
   currency?: T;
+  pageContext?: T;
   updatedAt?: T;
   createdAt?: T;
 }

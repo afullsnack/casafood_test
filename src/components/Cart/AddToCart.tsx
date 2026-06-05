@@ -4,8 +4,10 @@ import { Button } from '@/components/ui/button'
 import type { Product, Variant } from '@/payload-types'
 
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
+import { usePageCart } from '@/providers/PageCart/context'
 import clsx from 'clsx'
 import { useSearchParams } from 'next/navigation'
+import { select } from 'payload/shared'
 import React, { useCallback, useMemo } from 'react'
 import { toast } from 'sonner'
 type Props = {
@@ -13,7 +15,8 @@ type Props = {
 }
 
 export function AddToCart({ product }: Props) {
-  const { addItem, cart, isLoading } = useCart()
+  // const { addItem, cart, isLoading } = useCart()
+  const { addPageItem, pageCart, isLoading } = usePageCart()
   const searchParams = useSearchParams()
 
   const variants = product.variants?.docs || []
@@ -22,12 +25,16 @@ export function AddToCart({ product }: Props) {
     if (product.enableVariants && variants.length) {
       const variantId = searchParams.get('variant')
 
+      console.log(`Variant ID`, { variantId })
+
       const validVariant = variants.find((variant) => {
         if (typeof variant === 'object') {
-          return String(variant.id) === variantId
+          if (String(variant.id) === variantId) return variant
         }
-        return String(variant) === variantId
+        if (String(variant) === variantId) return variant
       })
+
+      console.log(`valid variant`, { validVariant, varType: typeof validVariant })
 
       if (validVariant && typeof validVariant === 'object') {
         return validVariant
@@ -41,18 +48,23 @@ export function AddToCart({ product }: Props) {
     (e: React.FormEvent<HTMLButtonElement>) => {
       e.preventDefault()
 
-      addItem({
-        product: product.id,
-        variant: selectedVariant?.id ?? undefined,
+      addPageItem({
+        product: product,
+        variant: selectedVariant ?? undefined,
       }).then(() => {
         toast.success('Item added to cart.')
       })
+      // .catch((error) => {
+      //   toast.error(`Failed to add items`, {
+      //     description: error?.message,
+      //   })
+      // })
     },
-    [addItem, product, selectedVariant],
+    [addPageItem, product, selectedVariant],
   )
 
   const disabled = useMemo<boolean>(() => {
-    const existingItem = cart?.items?.find((item) => {
+    const existingItem = pageCart?.items?.find((item) => {
       const productID = typeof item.product === 'object' ? item.product?.id : item.product
       const variantID = item.variant
         ? typeof item.variant === 'object'
@@ -68,6 +80,8 @@ export function AddToCart({ product }: Props) {
       }
     })
 
+    console.log(`Existing items`, { existingItem, product })
+
     if (existingItem) {
       const existingQuantity = existingItem.quantity
 
@@ -79,10 +93,12 @@ export function AddToCart({ product }: Props) {
 
     if (product.enableVariants) {
       if (!selectedVariant) {
+        console.log(`NO Selected variant`, { selectedVariant })
         return true
       }
 
       if (selectedVariant.inventory === 0) {
+        console.log(`Inventory ZERO`)
         return true
       }
     } else {
@@ -92,7 +108,9 @@ export function AddToCart({ product }: Props) {
     }
 
     return false
-  }, [selectedVariant, cart?.items, product])
+  }, [selectedVariant, pageCart?.items, product])
+
+  console.log('Disabled button', { disabled })
 
   return (
     <Button

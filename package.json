@@ -22,7 +22,9 @@
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
     "@payloadcms/admin-bar": "3.84.1",
+    "@payloadcms/db-sqlite": "3.84.1",
     "@payloadcms/email-nodemailer": "3.84.1",
     "@payloadcms/live-preview-react": "3.84.1",
     "@payloadcms/next": "3.84.1",
@@ -37,7 +39,7 @@
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-select": "^2.1.6",
-    "@radix-ui/react-slot": "^1.1.2",
+    "@radix-ui/react-slot": "^1.2.4",
     "@stripe/react-stripe-js": "^3",
     "@stripe/stripe-js": "^4.0.0",
     "class-variance-authority": "^0.7.0",
@@ -52,6 +54,7 @@
     "jsonwebtoken": "9.0.1",
     "lucide-react": "0.563.0",
     "next": "16.2.6",
+    "next-navigation-guard": "^0.2.0",
     "next-themes": "0.4.6",
     "payload": "3.84.1",
     "prism-react-renderer": "^2.3.1",
@@ -62,8 +65,7 @@
     "sharp": "0.34.2",
     "sonner": "^1.7.2",
     "stripe": "18.5.0",
-    "tailwind-merge": "^3.4.0",
-    "@payloadcms/db-sqlite": "3.84.1"
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

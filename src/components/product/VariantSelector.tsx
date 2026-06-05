@@ -17,8 +17,11 @@ export function VariantSelector({ product }: { product: Product }) {
   const hasVariants = Boolean(product.enableVariants && variants?.length && variantTypes?.length)
 
   if (!hasVariants) {
+    console.log(`No variants`)
     return null
   }
+
+  console.log(`Before variant map`)
 
   return variantTypes?.map((type) => {
     if (!type || typeof type !== 'object') {
@@ -30,6 +33,8 @@ export function VariantSelector({ product }: { product: Product }) {
     if (!options || !Array.isArray(options) || !options.length) {
       return <></>
     }
+
+    console.log(`Should render variant`)
 
     return (
       <dl className="" key={type.id}>

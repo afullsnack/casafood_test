@@ -1,9 +1,21 @@
 import type { CollectionSlug, GlobalSlug, Payload, PayloadRequest, File } from 'payload'
 
+import { cateringFormData } from './catering-form'
 import { contactFormData } from './contact-form'
 import { contactPageData } from './contact-page'
 import { productHatData } from './product-hat'
 import { productTshirtData, productTshirtVariant } from './product-tshirt'
+import {
+  freshProduceBoxData,
+  mealKitChickenData,
+  mealKitVeganData,
+  jollofRiceBowlData,
+  egusiSoupData,
+  suyaSkewersData,
+  bulkJollofRiceData,
+  bulkCateringPackageData,
+  partyPlatterData,
+} from './per-page-products'
 import { homePageData } from './home'
 import { imageHatData } from './image-hat'
 import { imageTshirtBlackData } from './image-tshirt-black'
@@ -27,7 +39,7 @@ const collections: CollectionSlug[] = [
   'orders',
 ]
 
-const categories = ['Accessories', 'T-Shirts', 'Hats']
+const categories = ['Accessories', 'T-Shirts', 'Hats', 'Fresh Produce', 'Meal Kits', 'Main Course', 'Grill', 'Bulk Packages', 'Catering']
 
 const sizeVariantOptions = [
   { label: 'Small', value: 'small' },
@@ -149,6 +161,12 @@ export const seed = async ({
     accessoriesCategory,
     tshirtsCategory,
     hatsCategory,
+    freshProduceCategory,
+    mealKitsCategory,
+    mainCourseCategory,
+    grillCategory,
+    bulkPackagesCategory,
+    cateringCategory,
   ] = await Promise.all([
     payload.create({
       collection: 'users',
@@ -303,12 +321,97 @@ export const seed = async ({
     ),
   )
 
+  payload.logger.info(`— Seeding per-page products...`)
+
+  await Promise.all([
+    payload.create({
+      collection: 'products',
+      depth: 0,
+      data: freshProduceBoxData({
+        categories: [freshProduceCategory],
+        relatedProducts: [],
+      }),
+    }),
+    payload.create({
+      collection: 'products',
+      depth: 0,
+      data: mealKitChickenData({
+        categories: [mealKitsCategory],
+        relatedProducts: [],
+      }),
+    }),
+    payload.create({
+      collection: 'products',
+      depth: 0,
+      data: mealKitVeganData({
+        categories: [mealKitsCategory],
+        relatedProducts: [],
+      }),
+    }),
+    payload.create({
+      collection: 'products',
+      depth: 0,
+      data: jollofRiceBowlData({
+        categories: [mainCourseCategory],
+        relatedProducts: [],
+      }),
+    }),
+    payload.create({
+      collection: 'products',
+      depth: 0,
+      data: egusiSoupData({
+        categories: [mainCourseCategory],
+        relatedProducts: [],
+      }),
+    }),
+    payload.create({
+      collection: 'products',
+      depth: 0,
+      data: suyaSkewersData({
+        categories: [grillCategory],
+        relatedProducts: [],
+      }),
+    }),
+    payload.create({
+      collection: 'products',
+      depth: 0,
+      data: bulkJollofRiceData({
+        categories: [bulkPackagesCategory],
+        relatedProducts: [],
+      }),
+    }),
+    payload.create({
+      collection: 'products',
+      depth: 0,
+      data: bulkCateringPackageData({
+        categories: [cateringCategory],
+        relatedProducts: [],
+      }),
+    }),
+    payload.create({
+      collection: 'products',
+      depth: 0,
+      data: partyPlatterData({
+        categories: [bulkPackagesCategory],
+        relatedProducts: [],
+      }),
+    }),
+  ])
+
   payload.logger.info(`— Seeding contact form...`)
 
   const contactForm = await payload.create({
     collection: 'forms',
     depth: 0,
     data: contactFormData(),
+  })
+
+  payload.logger.info(`— Seeding catering form...`)
+
+  await payload.create({
+    collection: 'forms',
+    depth: 0,
+    data: cateringFormData(),
   })
 
   payload.logger.info(`— Seeding pages...`)
@@ -520,8 +623,22 @@ export const seed = async ({
           {
             link: {
               type: 'custom',
-              label: 'Shop',
-              url: '/shop',
+              label: 'Food Hub',
+              url: '/food-hub',
+            },
+          },
+          {
+            link: {
+              type: 'custom',
+              label: 'Restaurant',
+              url: '/restaurant',
+            },
+          },
+          {
+            link: {
+              type: 'custom',
+              label: 'Bulk Orders',
+              url: '/bulk-order',
             },
           },
           {

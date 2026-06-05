@@ -56,6 +56,16 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
   fields: [
     { name: 'title', type: 'text', required: true },
     {
+      name: 'page',
+      type: 'select',
+      admin: { position: 'sidebar' },
+      options: [
+        { label: 'Food Hub', value: 'food-hub' },
+        { label: 'Restaurant', value: 'restaurant' },
+        { label: 'Bulk Order', value: 'bulk-order' },
+      ],
+    },
+    {
       type: 'tabs',
       tabs: [
         {

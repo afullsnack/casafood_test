@@ -5,7 +5,16 @@ import React, { Fragment } from 'react'
 
 import { CheckoutPage } from '@/components/checkout/CheckoutPage'
 
-export default function Checkout() {
+type SearchParams = { [key: string]: string | string[] | undefined }
+
+type Props = {
+  searchParams: Promise<SearchParams>
+}
+
+export default async function Checkout({ searchParams }: Props) {
+  const params = await searchParams
+  const context = typeof params.context === 'string' ? params.context : undefined
+
   return (
     <div className="container min-h-[90vh] flex">
       {!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY && (
@@ -34,7 +43,7 @@ export default function Checkout() {
 
       <h1 className="sr-only">Checkout</h1>
 
-      <CheckoutPage />
+      <CheckoutPage pageContext={context} />
     </div>
   )
 }

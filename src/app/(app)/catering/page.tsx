@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 
 import { ContentWithMediaBlock } from '@/blocks/ContentWithMedia/Component'
 import { CateringFormModal } from '@/components/CateringFormModal'
@@ -52,7 +52,7 @@ const inquiryFlow = [
   },
 ]
 
-export default function CateringPage() {
+function CateringPage() {
   const [selectedService, setSelectedService] = useState<string | null>(null)
 
   useNavigationGuard(true, 'You have unsaved changes')
@@ -62,7 +62,7 @@ export default function CateringPage() {
       <div className="pt-16 pb-24">
         <section className="container mb-16 text-center">
           <h1 className="text-3xl font-semibold mb-4">Choose your Catering Service</h1>
-          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl">
+          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl text-center">
             Whether it&apos;s an intimate gathering or a grand celebration — Casa has the right
             service for you.
           </p>
@@ -109,5 +109,13 @@ export default function CateringPage() {
         serviceName={selectedService || ''}
       />
     </>
+  )
+}
+
+export default function CateringPageWrapper() {
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <CateringPage />
+    </Suspense>
   )
 }

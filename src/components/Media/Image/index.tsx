@@ -60,10 +60,10 @@ export const Image: React.FC<MediaProps> = (props) => {
         .join(', ')
 
   return (
-    <NextImage
+    <img
       alt={alt || ''}
       className={cn(imgClassName)}
-      fill={fill}
+      // fill={fill}
       height={!fill ? height || heightFromProps : undefined}
       onClick={onClick}
       onLoad={() => {
@@ -72,10 +72,10 @@ export const Image: React.FC<MediaProps> = (props) => {
           onLoadFromProps()
         }
       }}
-      priority={priority}
-      quality={90}
+      // priority={priority}
+      // quality={90}
       sizes={sizes}
-      src={src}
+      src={src as string}
       width={!fill ? width || widthFromProps : undefined}
     />
   )

@@ -55,6 +55,19 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     )
   }
 
+  if (appearance === 'nav') {
+    return (
+      <Button asChild className={className} size={size} variant={appearance}>
+        <Link className={cn(className)} href={href} {...newTabProps}>
+          <div className={cn(`flex flex-col items-center justify-center gap-2`, className)}>
+            {children && children}
+            {label && label}
+          </div>
+        </Link>
+      </Button>
+    )
+  }
+
   return (
     <Button asChild className={className} size={size} variant={appearance}>
       <Link className={cn(className)} href={href} {...newTabProps}>

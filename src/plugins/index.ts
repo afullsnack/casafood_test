@@ -87,6 +87,21 @@ export const plugins: Plugin[] = [
     customers: {
       slug: 'users',
     },
+    carts: {
+      cartsCollectionOverride: ({ defaultCollection }) => ({
+        ...defaultCollection,
+        fields: [
+          ...defaultCollection.fields,
+          {
+            name: 'pageContext',
+            type: 'select',
+            options: ['food-hub', 'restaurant', 'bulk-order'],
+            admin: { position: 'sidebar' },
+            index: true,
+          },
+        ],
+      }),
+    },
     orders: {
       ordersCollectionOverride: ({ defaultCollection }) => ({
         ...defaultCollection,

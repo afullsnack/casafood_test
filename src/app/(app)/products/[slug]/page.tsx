@@ -13,6 +13,7 @@ import React, { Suspense } from 'react'
 import { Button } from '@/components/ui/button'
 import { ChevronLeftIcon } from 'lucide-react'
 import { Metadata } from 'next'
+import BackButton from '@/components/BackButton'
 
 type Args = {
   params: Promise<{
@@ -118,12 +119,7 @@ export default async function ProductPage({ params }: Args) {
         type="application/ld+json"
       />
       <div className="container pt-8 pb-8">
-        <Button asChild variant="ghost" className="mb-4">
-          <Link href="/shop">
-            <ChevronLeftIcon />
-            All products
-          </Link>
-        </Button>
+        <BackButton />
         <div className="flex flex-col gap-12 rounded-lg border p-8 md:py-12 lg:flex-row lg:gap-8 bg-primary-foreground">
           <div className="h-full w-full basis-full lg:basis-1/2">
             <Suspense

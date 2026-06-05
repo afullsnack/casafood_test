@@ -15,17 +15,15 @@ export function OpenCartButton({
     <Button
       variant="nav"
       size="clear"
-      className="navLink relative items-end hover:cursor-pointer"
+      className="navLink relative flex items-center hover:cursor-pointer"
       {...rest}
     >
-      <span>Cart</span>
-
-      {quantity ? (
+      {true ? (
         <>
-          <span>•</span>
-          <span>{quantity}</span>
+          <span className="text-lg">{quantity ?? 0}</span>
         </>
       ) : null}
+      <ShoppingCart className="size-5" />
     </Button>
   )
 }

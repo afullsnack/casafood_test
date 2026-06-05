@@ -10,6 +10,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
+import { usePageCart } from '@/providers/PageCart/context'
 import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -22,24 +23,48 @@ import { OpenCartButton } from './OpenCart'
 import { Button } from '@/components/ui/button'
 import { Product } from '@/payload-types'
 
+const PAGE_ROUTES = ['/food-hub', '/restaurant', '/bulk-order']
+
+function getPageContext(pathname: string): string | null {
+  for (const route of PAGE_ROUTES) {
+    if (pathname.startsWith(route)) return route.slice(1)
+  }
+  return null
+}
+
 export function CartModal() {
-  const { cart } = useCart()
+  // const { cart } = useCart()
+  const { pageItems, pageItemCount, pageSubtotal, pageCart, setPageContext } = usePageCart()
   const [isOpen, setIsOpen] = useState(false)
 
   const pathname = usePathname()
+  const currentPageContext = getPageContext(pathname)
 
   useEffect(() => {
-    // Close the cart modal when the pathname changes.
     setIsOpen(false)
   }, [pathname])
 
+  useEffect(() => {
+    if (currentPageContext) {
+      setPageContext(currentPageContext as any)
+    }
+  }, [currentPageContext, setPageContext])
+
+  const isPageRoute = currentPageContext !== null
+  const items = isPageRoute ? pageItems : pageItems || []
+  console.log(`Item count`, { items, pageItems, pageItemCount })
   const totalQuantity = useMemo(() => {
-    if (!cart || !cart.items || !cart.items.length) return undefined
-    return cart.items.reduce((quantity, item) => (item.quantity || 0) + quantity, 0)
-  }, [cart])
+    if (isPageRoute) {
+      return pageItemCount || undefined
+    }
+    if (!pageItems || !pageItems.length) return undefined
+    return pageItems.reduce((quantity, item) => (item.quantity || 0) + quantity, 0)
+  }, [pageCart, isPageRoute, pageItemCount])
+
+  const subtotal = isPageRoute ? pageSubtotal : pageCart?.subtotal
 
   return (
-    <Sheet onOpenChange={setIsOpen} open={isOpen}>
+    <Sheet onOpenChange={setIsOpen} open={false}>
       <SheetTrigger asChild>
         <OpenCartButton quantity={totalQuantity} />
       </SheetTrigger>
@@ -51,7 +76,7 @@ export function CartModal() {
           <SheetDescription>Manage your cart here, add items to view the total.</SheetDescription>
         </SheetHeader>
 
-        {!cart || cart?.items?.length === 0 ? (
+        {!items || items.length === 0 ? (
           <div className="text-center flex flex-col items-center gap-2">
             <ShoppingCart className="h-16" />
             <p className="text-center text-2xl font-bold">Your cart is empty.</p>
@@ -60,7 +85,7 @@ export function CartModal() {
           <div className="grow flex px-4">
             <div className="flex flex-col justify-between w-full">
               <ul className="grow overflow-auto py-4">
-                {cart?.items?.map((item, i) => {
+                {items.map((item, i) => {
                   const product = item.product
                   const variant = item.variant
 
@@ -82,7 +107,7 @@ export function CartModal() {
 
                   const isVariant = Boolean(variant) && typeof variant === 'object'
 
-                  if (isVariant) {
+                  if (isVariant && typeof variant === 'object') {
                     price = variant?.priceInUSD
 
                     const imageVariant = product.gallery?.find((item) => {
@@ -164,18 +189,21 @@ export function CartModal() {
 
               <div className="px-4">
                 <div className="py-4 text-sm text-neutral-500 dark:text-neutral-400">
-                  {typeof cart?.subtotal === 'number' && (
+                  {typeof subtotal === 'number' && (
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
                       <p>Total</p>
                       <Price
-                        amount={cart?.subtotal}
+                        amount={subtotal}
                         className="text-right text-base text-black dark:text-white"
                       />
                     </div>
                   )}
 
                   <Button asChild>
-                    <Link className="w-full" href="/checkout">
+                    <Link
+                      className="w-full"
+                      href={isPageRoute ? `/checkout?context=${currentPageContext}` : '/checkout'}
+                    >
                       Proceed to Checkout
                     </Link>
                   </Button>
