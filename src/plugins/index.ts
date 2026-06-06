@@ -156,5 +156,14 @@ export const plugins: Plugin[] = [
       media: true,
     },
     token: process.env.BLOB_READ_WRITE_TOKEN,
+    // Vercel Blob's `put` throws "blob already exists" when re-uploading the same
+    // pathname unless `allowOverwrite` is passed (a v1+ breaking change in
+    // @vercel/blob). The storage adapter never sets `allowOverwrite`, and seeding
+    // clears DB rows via `payload.db.deleteMany` (which bypasses the cloud-storage
+    // afterDelete hook), so old blobs like `media/hat-logo.png` linger and every
+    // re-seed fails on the first media upload. `addRandomSuffix` (Vercel's
+    // recommended option) gives each upload a unique pathname, eliminating the
+    // conflict and keeping seeding idempotent.
+    addRandomSuffix: true,
   }),
 ]
