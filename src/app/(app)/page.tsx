@@ -10,6 +10,7 @@ import PageTemplate, { generateMetadata } from './[slug]/page'
 import { ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import WhatsappButton from '@/components/WhatsappButton'
 
 const processes: Array<{
   title: string
@@ -166,14 +167,7 @@ export default function HomePage() {
             elegance to every occasion.
           </span>
           <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto mt-4">
-            <Button
-              variant="default"
-              size="lg"
-              className="rounded-full hover:text-secondary w-full md:w-auto"
-            >
-              <WhatsApp />
-              Chat on WhatsApp
-            </Button>
+            <WhatsappButton />
             <Button
               variant="outline"
               size="lg"
