@@ -11,7 +11,7 @@ import {
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 import path from 'path'
-import { buildConfig } from 'payload'
+import { buildConfig, type PayloadEmailAdapter } from 'payload'
 import { fileURLToPath } from 'url'
 
 import { Categories } from '@/collections/Categories'
@@ -84,7 +84,14 @@ export default buildConfig({
       ]
     },
   }),
-  //email: nodemailerAdapter(),
+  email: (({ payload }) => ({
+    name: 'console',
+    defaultFromAddress: 'dev@casafood.local',
+    defaultFromName: 'casafood',
+    sendEmail: async ({ to, subject, text, html }) => {
+      payload.logger.info({ to, subject, text, html }, `Email (console adapter): ${subject}`)
+    },
+  })) satisfies PayloadEmailAdapter,
   endpoints: [],
   globals: [Header, Footer],
   plugins,
