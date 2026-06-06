@@ -5,31 +5,41 @@ import React, { Suspense, useState } from 'react'
 import { ContentWithMediaBlock } from '@/blocks/ContentWithMedia/Component'
 import { CateringFormModal } from '@/components/CateringFormModal'
 import { useNavigationGuard } from '@/hooks/use-navigation-guard'
+import { Media } from '@/payload-types'
 
-const services = [
+const services: Array<{
+  title: string
+  description: string
+  link: { type: 'custom' | 'internal' | 'external'; url: string }
+  bgImage: string
+}> = [
   {
     title: 'Indoor Catering',
     description:
       'Perfect for homes, offices, small gatherings, team lunches, and private indoor events.',
     link: { type: 'custom' as const, url: '/contact' },
+    bgImage: '/Catering/Indoor-Catering.png',
   },
   {
     title: 'Outdoor Catering',
     description:
       'Full catering support for weddings, ceremonies, birthdays, corporate events, and large gatherings.',
     link: { type: 'custom' as const, url: '/contact' },
+    bgImage: '/Catering/Outdoor-Catering.png',
   },
   {
     title: 'Bulk Cooking',
     description:
       'Large-volume food preparation for schools, corporates, private orders, and group feeding needs.',
     link: { type: 'custom' as const, url: '/contact' },
+    bgImage: '/Catering/Bulk-Cooking.png',
   },
   {
     title: 'Private Chef Services',
     description:
       'A personalized chef experience for private homes, intimate dinners, executive hosting, and exclusive events.',
     link: { type: 'custom' as const, url: '/contact' },
+    bgImage: '/Catering/Private-Chef.png',
   },
 ]
 
@@ -55,15 +65,13 @@ const inquiryFlow = [
 function CateringPage() {
   const [selectedService, setSelectedService] = useState<string | null>(null)
 
-  useNavigationGuard(true, 'You have unsaved changes')
+  // useNavigationGuard(true, 'You have unsaved changes')
 
   return (
     <>
       <div className="pt-16 pb-24">
         <section className="container mb-16 flex flex-col items-center">
-          <h1 className="text-3xl font-semibold mb-4 text-balance text-center">
-            Choose your Catering Service
-          </h1>
+          <h1 className="text-3xl font-semibold mb-4 text-center">Choose your Catering Service</h1>
           <p className="text-sm md:text-lg text-muted-foreground max-w-2xl text-center text-balance">
             Whether it&apos;s an intimate gathering or a grand celebration — Casa has the right
             service for you.
