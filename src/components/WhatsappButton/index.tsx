@@ -15,6 +15,7 @@ export default function WhatsappButton() {
             *Let us know how we can be of service today!*
           `
           callWhatsapp({ content: formatted })
+          window.open(`example.com`, '_blank')
         }
       }}
     >
