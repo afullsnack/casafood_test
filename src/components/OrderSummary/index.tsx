@@ -1,14 +1,13 @@
 'use client'
 
 import { Media } from '@/components/Media'
-import { Price } from '@/components/Price'
+import { formatNaira, resolveNairaPrice } from '@/utilities/pricing'
 import type { Cart } from '@/payload-types'
 import React from 'react'
 
 type Props = {
   items: Cart['items']
   subtotal: number
-  currency?: string
 }
 
 export function OrderSummary({ items, subtotal }: Props) {
@@ -32,12 +31,12 @@ export function OrderSummary({ items, subtotal }: Props) {
           if (!quantity) return null
 
           let image = gallery?.[0]?.image || meta?.image
-          let price = product?.priceInUSD
+          let price = resolveNairaPrice(product)
 
           const isVariant = Boolean(variant) && typeof variant === 'object'
 
           if (isVariant && typeof variant === 'object') {
-            price = variant?.priceInUSD
+            price = resolveNairaPrice(variant)
 
             const imageVariant = product.gallery?.find((item) => {
               if (!item.variantOption) return false
@@ -84,7 +83,9 @@ export function OrderSummary({ items, subtotal }: Props) {
                   <div className="text-xs text-muted-foreground">x{quantity}</div>
                 </div>
 
-                {typeof price === 'number' && <Price amount={price} className="text-sm" />}
+                {typeof price === 'number' && (
+                  <span className="text-sm">{formatNaira(price)}</span>
+                )}
               </div>
             </div>
           )
@@ -95,7 +96,7 @@ export function OrderSummary({ items, subtotal }: Props) {
 
       <div className="flex justify-between items-center gap-2">
         <span className="uppercase text-sm">Total</span>
-        <Price className="text-2xl font-medium" amount={subtotal || 0} />
+        <span className="text-2xl font-medium">{formatNaira(subtotal || 0)}</span>
       </div>
     </div>
   )

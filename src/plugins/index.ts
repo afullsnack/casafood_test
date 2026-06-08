@@ -8,6 +8,8 @@ import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 
 import { stripeAdapter } from '@payloadcms/plugin-ecommerce/payments/stripe'
 
+import type { CurrenciesConfig, Currency } from '@payloadcms/plugin-ecommerce/types'
+
 import { Page, Product } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
 import { ProductsCollection } from '@/collections/Products'
@@ -25,6 +27,18 @@ const generateURL: GenerateURL<Product | Page> = ({ doc }) => {
   const url = getServerSideURL()
 
   return doc?.slug ? `${url}/${doc.slug}` : url
+}
+
+// Naira is the primary storefront currency (the Food Hub / Restaurant / Bulk Order
+// pages price everything in ₦). USD is kept so the existing shop demo products that
+// still carry `priceInUSD` continue to work. Naira is conventionally shown without
+// kobo, so NGN uses 0 decimals — amounts are stored as whole naira.
+const NGN: Currency = { code: 'NGN', decimals: 0, label: 'Nigerian Naira', symbol: '₦' }
+const USD: Currency = { code: 'USD', decimals: 2, label: 'US Dollar', symbol: '$' }
+
+const currencies: CurrenciesConfig = {
+  defaultCurrency: 'NGN',
+  supportedCurrencies: [NGN, USD],
 }
 
 export const plugins: Plugin[] = [
@@ -85,6 +99,7 @@ export const plugins: Plugin[] = [
       isAdmin,
       isDocumentOwner,
     },
+    currencies,
     customers: {
       slug: 'users',
     },

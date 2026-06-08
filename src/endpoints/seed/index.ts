@@ -53,6 +53,11 @@ const colorVariantOptions = [
   { label: 'White', value: 'white' },
 ]
 
+const paymentPlanVariantOptions = [
+  { label: 'Pay in Full', value: 'pay-in-full' },
+  { label: 'Pay Small Small', value: 'pay-small-small' },
+]
+
 const globals: GlobalSlug[] = ['header', 'footer']
 
 const baseAddressUSData: Transaction['billingAddress'] = {
@@ -253,6 +258,26 @@ export const seed = async ({
     }),
   )
 
+  const paymentPlanVariantType = await payload.create({
+    collection: 'variantTypes',
+    data: {
+      name: 'payment-plan',
+      label: 'Payment Plan',
+    },
+  })
+
+  const [payInFull, paySmallSmall] = await Promise.all(
+    paymentPlanVariantOptions.map((option) => {
+      return payload.create({
+        collection: 'variantOptions',
+        data: {
+          ...option,
+          variantType: paymentPlanVariantType.id,
+        },
+      })
+    }),
+  )
+
   payload.logger.info(`— Seeding products...`)
 
   const productHat = await payload.create({
@@ -323,13 +348,14 @@ export const seed = async ({
 
   payload.logger.info(`— Seeding per-page products...`)
 
-  await Promise.all([
+  const [freshProduceBox, mealKitChicken] = await Promise.all([
     payload.create({
       collection: 'products',
       depth: 0,
       data: freshProduceBoxData({
         categories: [freshProduceCategory],
         relatedProducts: [],
+        variantTypes: [paymentPlanVariantType],
       }),
     }),
     payload.create({
@@ -338,8 +364,12 @@ export const seed = async ({
       data: mealKitChickenData({
         categories: [mealKitsCategory],
         relatedProducts: [],
+        variantTypes: [paymentPlanVariantType],
       }),
     }),
+  ])
+
+  await Promise.all([
     payload.create({
       collection: 'products',
       depth: 0,
@@ -395,6 +425,61 @@ export const seed = async ({
         categories: [bulkPackagesCategory],
         relatedProducts: [],
       }),
+    }),
+  ])
+
+  payload.logger.info(`— Seeding payment-plan variants...`)
+
+  // "Pay in Full" carries the full price; "Pay Small Small" carries the
+  // per-instalment amount surfaced on the storefront card.
+  await Promise.all([
+    payload.create({
+      collection: 'variants',
+      depth: 0,
+      data: {
+        product: freshProduceBox.id,
+        options: [payInFull.id],
+        inventory: 40,
+        priceInNGNEnabled: true,
+        priceInNGN: 35000,
+        _status: 'published',
+      },
+    }),
+    payload.create({
+      collection: 'variants',
+      depth: 0,
+      data: {
+        product: freshProduceBox.id,
+        options: [paySmallSmall.id],
+        inventory: 40,
+        priceInNGNEnabled: true,
+        priceInNGN: 12000,
+        _status: 'published',
+      },
+    }),
+    payload.create({
+      collection: 'variants',
+      depth: 0,
+      data: {
+        product: mealKitChicken.id,
+        options: [payInFull.id],
+        inventory: 60,
+        priceInNGNEnabled: true,
+        priceInNGN: 18000,
+        _status: 'published',
+      },
+    }),
+    payload.create({
+      collection: 'variants',
+      depth: 0,
+      data: {
+        product: mealKitChicken.id,
+        options: [paySmallSmall.id],
+        inventory: 60,
+        priceInNGNEnabled: true,
+        priceInNGN: 6000,
+        _status: 'published',
+      },
     }),
   ])
 

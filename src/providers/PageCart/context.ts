@@ -12,6 +12,8 @@ export interface PageCartContextType {
   pageSubtotal: number
   addPageItem: (item: { product: Product; variant?: Variant }, quantity?: number) => Promise<void>
   removePageItem: (itemId: string) => Promise<void>
+  incrementPageItem: (itemId: string) => Promise<void>
+  decrementPageItem: (itemId: string) => Promise<void>
   clearPageCart: () => Promise<void>
   isLoading: boolean
   pageContext: PageContextValue | null

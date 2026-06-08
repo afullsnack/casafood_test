@@ -1,4 +1,5 @@
 'use client'
+import { callWhatsapp } from '@/utilities/whatsappRedirect'
 import { WhatsApp } from '../icons/landing'
 import { Button } from '../ui/button'
 
@@ -11,11 +12,9 @@ export default function WhatsappButton() {
       onClick={() => {
         if (typeof window !== 'undefined') {
           const formatted = `
-
+            *Let us know how we can be of service today!*
           `
-
-          window.open(encodeURI(`https://wa.me/9081146028`), '_blank')
-          // window.location.href = encodeURI(`https://wa.me/${process.env.WA_NUMBER}`)
+          callWhatsapp({ content: formatted })
         }
       }}
     >

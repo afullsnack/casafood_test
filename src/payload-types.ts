@@ -254,7 +254,7 @@ export interface Order {
   transactions?: (number | Transaction)[] | null;
   status?: OrderStatus;
   amount?: number | null;
-  currency?: 'USD' | null;
+  currency?: ('NGN' | 'USD') | null;
   accessToken?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -267,6 +267,10 @@ export interface Product {
   id: number;
   title: string;
   page?: ('food-hub' | 'restaurant' | 'bulk-order') | null;
+  /**
+   * Pricing unit shown next to the price, e.g. "per bag", "per pack", "per crate".
+   */
+  unit?: string | null;
   description?: {
     root: {
       type: string;
@@ -298,6 +302,8 @@ export interface Product {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  priceInNGNEnabled?: boolean | null;
+  priceInNGN?: number | null;
   priceInUSDEnabled?: boolean | null;
   priceInUSD?: number | null;
   relatedProducts?: (number | Product)[] | null;
@@ -910,6 +916,8 @@ export interface Variant {
   product: number | Product;
   options: (number | VariantOption)[];
   inventory?: number | null;
+  priceInNGNEnabled?: boolean | null;
+  priceInNGN?: number | null;
   priceInUSDEnabled?: boolean | null;
   priceInUSD?: number | null;
   updatedAt: string;
@@ -955,7 +963,7 @@ export interface Transaction {
   order?: (number | null) | Order;
   cart?: (number | null) | Cart;
   amount?: number | null;
-  currency?: 'USD' | null;
+  currency?: ('NGN' | 'USD') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -978,7 +986,7 @@ export interface Cart {
   purchasedAt?: string | null;
   status?: ('active' | 'purchased' | 'abandoned') | null;
   subtotal?: number | null;
-  currency?: 'USD' | null;
+  currency?: ('NGN' | 'USD') | null;
   pageContext?: ('food-hub' | 'restaurant' | 'bulk-order') | null;
   updatedAt: string;
   createdAt: string;
@@ -1610,6 +1618,8 @@ export interface VariantsSelect<T extends boolean = true> {
   product?: T;
   options?: T;
   inventory?: T;
+  priceInNGNEnabled?: T;
+  priceInNGN?: T;
   priceInUSDEnabled?: T;
   priceInUSD?: T;
   updatedAt?: T;
@@ -1649,6 +1659,7 @@ export interface VariantOptionsSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   page?: T;
+  unit?: T;
   description?: T;
   gallery?:
     | T
@@ -1668,6 +1679,8 @@ export interface ProductsSelect<T extends boolean = true> {
   enableVariants?: T;
   variantTypes?: T;
   variants?: T;
+  priceInNGNEnabled?: T;
+  priceInNGN?: T;
   priceInUSDEnabled?: T;
   priceInUSD?: T;
   relatedProducts?: T;

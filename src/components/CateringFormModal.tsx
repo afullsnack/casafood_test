@@ -75,8 +75,10 @@ export function CateringFormModal({ open, onOpenChange, serviceName }: CateringF
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent side="bottom" className="h-[90vh] overflow-y-auto">
           <SheetHeader className="text-left">
-            <SheetTitle>{serviceName}</SheetTitle>
-            <SheetDescription>Fill out the form to book this service.</SheetDescription>
+            <SheetTitle>{'Tell us about your event'}</SheetTitle>
+            <SheetDescription>
+              Fill in the details below and we'll prepare a tailored proposal for you.
+            </SheetDescription>
           </SheetHeader>
           <div className="px-4 pb-8">{formContent}</div>
         </SheetContent>
@@ -88,8 +90,10 @@ export function CateringFormModal({ open, onOpenChange, serviceName }: CateringF
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg max-h-[95vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{serviceName}</DialogTitle>
-          <DialogDescription>Fill out the form to book this service.</DialogDescription>
+          <DialogTitle>{'Tell us about your event'}</DialogTitle>
+          <DialogDescription>
+            Fill in the details below and we'll prepare a tailored proposal for you.
+          </DialogDescription>
         </DialogHeader>
         {formContent}
       </DialogContent>

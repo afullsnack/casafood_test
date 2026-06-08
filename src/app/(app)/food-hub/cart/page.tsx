@@ -1,4 +1,4 @@
-import { PageCartPage } from '@/components/PageCartPage'
+import { CartView } from '@/components/Cart/CartView'
 import React, { Suspense } from 'react'
 
 export const metadata = {
@@ -9,7 +9,7 @@ export const metadata = {
 export default function FoodHubCartPage() {
   return (
     <Suspense fallback={<div className="min-h-screen" />}>
-      <PageCartPage context="food-hub" title="Food Hub" />
+      <CartView context="food-hub" />
     </Suspense>
   )
 }
