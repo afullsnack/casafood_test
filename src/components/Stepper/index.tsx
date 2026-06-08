@@ -1,5 +1,7 @@
 'use client'
 
+import { cn } from '@/utilities/cn'
+import { Check } from 'lucide-react'
 import React from 'react'
 
 type Step = {
@@ -15,45 +17,39 @@ type Props = {
 
 export function Stepper({ steps, currentStep, children }: Props) {
   return (
-    <div className="w-full">
-      <nav aria-label="Checkout progress" className="mb-8">
-        <ol className="flex items-center justify-center gap-2">
+    <div className="w-full max-w-2xl md:mx-auto">
+      <nav aria-label="Checkout progress" className="mb-10">
+        <ol className="flex items-center gap-4">
           {steps.map((step, index) => {
             const isActive = index === currentStep
             const isCompleted = index < currentStep
+            const isReached = isActive || isCompleted
 
             return (
-              <li key={step.id} className="flex items-center gap-2">
-                <div
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-primary text-primary-foreground'
-                      : isCompleted
-                        ? 'bg-primary/20 text-primary'
-                        : 'bg-muted text-muted-foreground'
-                  }`}
-                >
+              <React.Fragment key={step.id}>
+                <li className="flex items-center gap-2">
                   <span
-                    className={`flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${
-                      isActive
-                        ? 'bg-primary-foreground text-primary'
-                        : isCompleted
-                          ? 'bg-primary text-primary-foreground'
-                          : 'bg-muted-foreground/20 text-muted-foreground'
-                    }`}
+                    aria-current={isActive ? 'step' : undefined}
+                    className={cn(
+                      'flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold',
+                      isReached
+                        ? 'bg-[#4A5A2A] text-white'
+                        : 'border border-muted-foreground/40 text-muted-foreground',
+                    )}
                   >
-                    {isCompleted ? '✓' : index + 1}
+                    {isCompleted ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : index + 1}
                   </span>
-                  <span className="hidden sm:inline">{step.label}</span>
-                </div>
-                {index < steps.length - 1 && (
-                  <div
-                    className={`h-px w-8 ${
-                      isCompleted ? 'bg-primary' : 'bg-muted'
-                    }`}
-                  />
-                )}
-              </li>
+                  <span
+                    className={cn(
+                      'text-sm',
+                      isReached ? 'font-medium text-foreground' : 'text-muted-foreground',
+                    )}
+                  >
+                    {step.label}
+                  </span>
+                </li>
+                {index < steps.length - 1 && <span aria-hidden className="h-px w-12 bg-border" />}
+              </React.Fragment>
             )
           })}
         </ol>

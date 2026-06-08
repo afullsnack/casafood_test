@@ -22,6 +22,7 @@ import { EditItemQuantityButton } from './EditItemQuantityButton'
 import { OpenCartButton } from './OpenCart'
 import { Button } from '@/components/ui/button'
 import { Product } from '@/payload-types'
+import { toast } from 'sonner'
 
 const PAGE_ROUTES = ['/food-hub', '/restaurant', '/bulk-order']
 
@@ -70,7 +71,11 @@ export function CartModal() {
         <OpenCartButton
           quantity={totalQuantity}
           onClick={() => {
-            router.push(`/${pageCart?.pageContext}/cart`)
+            if (pageCart?.pageContext) {
+              router.push(`/${pageCart?.pageContext}/cart`)
+            } else {
+              toast.info(`Your cart is empty, add some items to view the cart`)
+            }
           }}
         />
       </SheetTrigger>

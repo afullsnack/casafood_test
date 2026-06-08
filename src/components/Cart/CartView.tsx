@@ -9,6 +9,7 @@ import { useEffect } from 'react'
 import { CartEmptyState } from './CartEmptyState'
 import { CartLineItem } from './CartLineItem'
 import { CartOrderSummary } from './CartOrderSummary'
+import { Badge } from '../ui/badge'
 
 export function CartView({ context }: { context: PageContextValue }) {
   const { setPageContext, pageItems, pageItemCount, pageSubtotal } = usePageCart()
@@ -37,7 +38,17 @@ export function CartView({ context }: { context: PageContextValue }) {
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start">
         <div className="flex-1">
           <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-            Food Items
+            {context === 'food-hub' ? (
+              'Food Items'
+            ) : context === 'restaurant' ? (
+              <span>
+                restaurant order <Badge>{pageItemCount}</Badge>{' '}
+              </span>
+            ) : (
+              <span>
+                bulk order request <Badge>Quote Pending</Badge>
+              </span>
+            )}
           </p>
           <div className="space-y-4">
             {items.map((item, index) => (
