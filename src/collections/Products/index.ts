@@ -50,6 +50,9 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
     enableVariants: true,
     gallery: true,
     priceInUSD: true,
+    priceInNGN: true,
+    unit: true,
+    variantTypes: true,
     inventory: true,
     meta: true,
   },
@@ -64,6 +67,14 @@ export const ProductsCollection: CollectionOverride = ({ defaultCollection }) =>
         { label: 'Restaurant', value: 'restaurant' },
         { label: 'Bulk Order', value: 'bulk-order' },
       ],
+    },
+    {
+      name: 'unit',
+      type: 'text',
+      admin: {
+        position: 'sidebar',
+        description: 'Pricing unit shown next to the price, e.g. "per bag", "per pack", "per crate".',
+      },
     },
     {
       type: 'tabs',

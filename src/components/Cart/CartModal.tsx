@@ -1,6 +1,6 @@
 'use client'
 
-import { Price } from '@/components/Price'
+import { formatNaira, resolveNairaPrice } from '@/utilities/pricing'
 import {
   Sheet,
   SheetContent,
@@ -14,7 +14,7 @@ import { usePageCart } from '@/providers/PageCart/context'
 import { ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect, useMemo, useState } from 'react'
 
 import { DeleteItemButton } from './DeleteItemButton'
@@ -52,7 +52,6 @@ export function CartModal() {
 
   const isPageRoute = currentPageContext !== null
   const items = isPageRoute ? pageItems : pageItems || []
-  console.log(`Item count`, { items, pageItems, pageItemCount })
   const totalQuantity = useMemo(() => {
     if (isPageRoute) {
       return pageItemCount || undefined
@@ -63,10 +62,17 @@ export function CartModal() {
 
   const subtotal = isPageRoute ? pageSubtotal : pageCart?.subtotal
 
+  const router = useRouter()
+
   return (
     <Sheet onOpenChange={setIsOpen} open={false}>
       <SheetTrigger asChild>
-        <OpenCartButton quantity={totalQuantity} />
+        <OpenCartButton
+          quantity={totalQuantity}
+          onClick={() => {
+            router.push(`/${pageCart?.pageContext}/cart`)
+          }}
+        />
       </SheetTrigger>
 
       <SheetContent className="flex flex-col">
@@ -103,12 +109,12 @@ export function CartModal() {
                       : undefined
 
                   let image = firstGalleryImage || metaImage
-                  let price = product.priceInUSD
+                  let price = resolveNairaPrice(product)
 
                   const isVariant = Boolean(variant) && typeof variant === 'object'
 
                   if (isVariant && typeof variant === 'object') {
-                    price = variant?.priceInUSD
+                    price = resolveNairaPrice(variant)
 
                     const imageVariant = product.gallery?.find((item) => {
                       if (!item.variantOption) return false
@@ -168,10 +174,9 @@ export function CartModal() {
                         </Link>
                         <div className="flex h-16 flex-col justify-between">
                           {typeof price === 'number' && (
-                            <Price
-                              amount={price}
-                              className="flex justify-end space-y-2 text-right text-sm"
-                            />
+                            <span className="flex justify-end text-right text-sm">
+                              {formatNaira(price)}
+                            </span>
                           )}
                           <div className="ml-auto flex h-9 flex-row items-center rounded-lg border">
                             <EditItemQuantityButton item={item} type="minus" />
@@ -192,10 +197,9 @@ export function CartModal() {
                   {typeof subtotal === 'number' && (
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
                       <p>Total</p>
-                      <Price
-                        amount={subtotal}
-                        className="text-right text-base text-black dark:text-white"
-                      />
+                      <span className="text-right text-base text-black dark:text-white">
+                        {formatNaira(subtotal)}
+                      </span>
                     </div>
                   )}
 

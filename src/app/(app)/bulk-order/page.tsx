@@ -21,14 +21,13 @@ export default async function BulkOrderPage() {
         { page: { equals: 'bulk-order' } },
       ],
     },
-    depth: 1,
+    depth: 2,
   })
 
   return (
     <PageProductGrid
       context="bulk-order"
       products={products.docs as any}
-      title="Bulk Order"
     />
   )
 }

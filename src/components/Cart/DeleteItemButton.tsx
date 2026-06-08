@@ -1,13 +1,13 @@
 'use client'
 
 import type { CartItem } from '@/components/Cart'
-import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
+import { usePageCart } from '@/providers/PageCart/context'
 import clsx from 'clsx'
 import { XIcon } from 'lucide-react'
 import React from 'react'
 
 export function DeleteItemButton({ item }: { item: CartItem }) {
-  const { isLoading, removeItem } = useCart()
+  const { isLoading, removePageItem } = usePageCart()
   const itemId = item.id
 
   return (
@@ -23,7 +23,7 @@ export function DeleteItemButton({ item }: { item: CartItem }) {
         disabled={!itemId || isLoading}
         onClick={(e: React.FormEvent<HTMLButtonElement>) => {
           e.preventDefault()
-          if (itemId) removeItem(itemId)
+          if (itemId) removePageItem(itemId)
         }}
         type="button"
       >

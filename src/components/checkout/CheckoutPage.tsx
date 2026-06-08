@@ -2,7 +2,7 @@
 
 import { Message } from '@/components/Message'
 import { OrderSummary } from '@/components/OrderSummary'
-import { Price } from '@/components/Price'
+import { formatNaira, resolveNairaPrice } from '@/utilities/pricing'
 import { Stepper } from '@/components/Stepper'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -153,7 +153,8 @@ export const CheckoutPage: React.FC<Props> = ({ pageContext }) => {
                 {pageItems.map((item, index) => {
                   if (typeof item.product !== 'object' || !item.product) return null
                   const product = item.product
-                  const price = product?.priceInUSD
+                  const variant = item.variant && typeof item.variant === 'object' ? item.variant : undefined
+                  const price = resolveNairaPrice(variant) ?? resolveNairaPrice(product)
 
                   return (
                     <div
@@ -173,7 +174,7 @@ export const CheckoutPage: React.FC<Props> = ({ pageContext }) => {
                         <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                       </div>
                       <div className="text-right">
-                        {typeof price === 'number' && <Price amount={price} />}
+                        {typeof price === 'number' && <span>{formatNaira(price)}</span>}
                       </div>
                     </div>
                   )

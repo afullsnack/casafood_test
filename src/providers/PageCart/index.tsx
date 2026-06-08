@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { PageCartContext, type PageContextValue } from './context'
 import type { Cart, Product, Variant } from '@/payload-types'
+import { resolveNairaPrice } from '@/utilities/pricing'
 import { getRandomValues, randomBytes } from 'crypto'
 
 const STORAGE_PREFIX = 'pageCart'
@@ -29,6 +30,24 @@ function saveToCart(obj: any, cartKey: string = 'cart') {
 
 function clearCurrentCart(cartKey: string = 'cart') {
   localStorage.removeItem(cartKey)
+}
+
+function getItemUnitPrice(item: NonNullable<Cart['items']>[number]): number {
+  const variant = item.variant
+  if (variant && typeof variant === 'object') {
+    const variantPrice = resolveNairaPrice(variant)
+    if (typeof variantPrice === 'number') return variantPrice
+  }
+  const product = item.product
+  if (product && typeof product === 'object') {
+    const productPrice = resolveNairaPrice(product)
+    if (typeof productPrice === 'number') return productPrice
+  }
+  return 0
+}
+
+function computeSubtotal(items: Cart['items']): number {
+  return (items || []).reduce((sum, item) => sum + getItemUnitPrice(item) * (item.quantity || 0), 0)
 }
 
 export function PageCartProvider({ children }: { children: React.ReactNode }) {
@@ -160,41 +179,36 @@ export function PageCartProvider({ children }: { children: React.ReactNode }) {
         // }
         // const refreshed = await getCart(creds.id, { secret: creds.secret })
         // setPageCart(refreshed)
-        let currentCart = loadCurrentCart()
-        if (currentCart) {
-          const existingItem = currentCart.items?.find((itemFound) => {
-            if (itemFound && itemFound.product && typeof itemFound.product === 'object') {
-              return itemFound.id === String(item.product.id)
-            }
-          })
-
-          if (existingItem) {
-            const modifiedItems = currentCart.items?.map((item) =>
-              item.id === existingItem.id
-                ? {
-                    ...item,
-                    quantity: item.quantity + 1,
-                  }
-                : item,
-            )
-            currentCart = {
-              ...currentCart,
-              items: modifiedItems,
-            }
-          } else {
-            currentCart = {
-              ...currentCart,
-              subtotal: Number(currentCart.subtotal || 0) + Number(item.product.priceInUSD),
-              items: [{ ...item, quantity: 1, id: String(item.product.id) }],
-            }
-          }
-
-          saveToCart(currentCart)
-          const refreshed = await getCart()
-          setPageCart(refreshed)
-        } else {
+        const currentCart = loadCurrentCart()
+        if (!currentCart) {
           throw new Error(`Failed to load cart`)
         }
+
+        // Distinct payment-plan variants (e.g. "Pay in Full" vs "Pay Small Small")
+        // must be separate line items, so the cart key includes the variant id.
+        const itemId = item.variant
+          ? `${item.product.id}:${item.variant.id}`
+          : String(item.product.id)
+
+        const existingItem = currentCart.items?.find((found) => found.id === itemId)
+
+        const modifiedItems = existingItem
+          ? (currentCart.items || []).map((found) =>
+              found.id === itemId
+                ? { ...found, quantity: (found.quantity || 0) + quantity }
+                : found,
+            )
+          : [...(currentCart.items || []), { ...item, quantity, id: itemId }]
+
+        const updatedCart = {
+          ...currentCart,
+          items: modifiedItems,
+          subtotal: computeSubtotal(modifiedItems),
+        }
+
+        saveToCart(updatedCart)
+        const refreshed = await getCart()
+        setPageCart(refreshed)
       } catch (error) {
         console.error('Error adding item:', error)
       } finally {
@@ -222,18 +236,11 @@ export function PageCartProvider({ children }: { children: React.ReactNode }) {
         //   throw new Error(`Failed to remove item: ${errorText}`)
         // }
 
-        const itemtoRemove = currentCart.items?.find((item) => item.id === itemId)
         const modifiedItems = currentCart.items?.filter((item) => item.id !== itemId)
         currentCart = {
           ...currentCart,
           items: modifiedItems,
-          subtotal:
-            Number(currentCart.subtotal) -
-            Number(
-              typeof itemtoRemove?.product === 'object'
-                ? Number(itemtoRemove.product?.priceInUSD) * itemtoRemove.quantity
-                : 0,
-            ),
+          subtotal: computeSubtotal(modifiedItems),
         }
 
         saveToCart(currentCart)
@@ -247,6 +254,60 @@ export function PageCartProvider({ children }: { children: React.ReactNode }) {
       }
     },
     [pageContext, cartsSlug, getCart],
+  )
+
+  const incrementPageItem = useCallback(
+    async (itemId: string) => {
+      if (!pageContext) return
+      let currentCart = loadCurrentCart()
+      if (!currentCart) return
+      setIsLoading(true)
+      try {
+        const modifiedItems = currentCart.items?.map((item) =>
+          item.id === itemId ? { ...item, quantity: (item.quantity || 0) + 1 } : item,
+        )
+        currentCart = {
+          ...currentCart,
+          items: modifiedItems,
+          subtotal: computeSubtotal(modifiedItems),
+        }
+        saveToCart(currentCart)
+        setPageCart(await getCart())
+      } catch (error) {
+        console.error('Error incrementing item:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [pageContext, getCart],
+  )
+
+  const decrementPageItem = useCallback(
+    async (itemId: string) => {
+      if (!pageContext) return
+      let currentCart = loadCurrentCart()
+      if (!currentCart) return
+      setIsLoading(true)
+      try {
+        const modifiedItems = currentCart.items
+          ?.map((item) =>
+            item.id === itemId ? { ...item, quantity: (item.quantity || 0) - 1 } : item,
+          )
+          .filter((item) => (item.quantity || 0) > 0)
+        currentCart = {
+          ...currentCart,
+          items: modifiedItems,
+          subtotal: computeSubtotal(modifiedItems),
+        }
+        saveToCart(currentCart)
+        setPageCart(await getCart())
+      } catch (error) {
+        console.error('Error decrementing item:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [pageContext, getCart],
   )
 
   const clearPageCart = useCallback(async () => {
@@ -276,12 +337,23 @@ export function PageCartProvider({ children }: { children: React.ReactNode }) {
       pageSubtotal: subtotal,
       addPageItem,
       removePageItem,
+      incrementPageItem,
+      decrementPageItem,
       clearPageCart,
       isLoading,
       pageContext,
       setPageContext,
     }
-  }, [pageCart, addPageItem, removePageItem, clearPageCart, isLoading, pageContext])
+  }, [
+    pageCart,
+    addPageItem,
+    removePageItem,
+    incrementPageItem,
+    decrementPageItem,
+    clearPageCart,
+    isLoading,
+    pageContext,
+  ])
 
   return <PageCartContext.Provider value={value}>{children}</PageCartContext.Provider>
 }

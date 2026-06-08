@@ -1,93 +1,183 @@
 'use client'
-import type { Product, Variant } from '@/payload-types'
+
+import type { Product } from '@/payload-types'
 
 import { RichText } from '@/components/RichText'
-import { AddToCart } from '@/components/Cart/AddToCart'
-import { Price } from '@/components/Price'
-import React, { Suspense } from 'react'
+import { Button } from '@/components/ui/button'
+import { WhatsApp } from '@/components/icons/landing'
+import { usePageCart } from '@/providers/PageCart/context'
+import { cn } from '@/utilities/cn'
+import {
+  formatNaira,
+  getPaymentPlan,
+  resolveNairaPrice,
+  type PaymentOption,
+} from '@/utilities/pricing'
+import { Minus, Plus } from 'lucide-react'
+import Link from 'next/link'
+import { useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 
 import { VariantSelector } from './VariantSelector'
-import { useCurrency } from '@payloadcms/plugin-ecommerce/client/react'
-import { StockIndicator } from '@/components/product/StockIndicator'
-import { PageAddToCart } from '../Cart/PageAddToCart'
 
 export function ProductDescription({ product }: { product: Product }) {
-  const { currency } = useCurrency()
-  let amount = 0,
-    lowestAmount = 0,
-    highestAmount = 0
-  const priceField = `priceIn${currency.code}` as keyof Product
-  const hasVariants = product.enableVariants && Boolean(product.variants?.docs?.length)
+  const { addPageItem, isLoading, setPageContext } = usePageCart()
 
-  if (hasVariants) {
-    const priceField = `priceIn${currency.code}` as keyof Variant
-    const variantsOrderedByPrice = product.variants?.docs
-      ?.filter((variant) => variant && typeof variant === 'object')
-      .sort((a, b) => {
-        if (
-          typeof a === 'object' &&
-          typeof b === 'object' &&
-          priceField in a &&
-          priceField in b &&
-          typeof a[priceField] === 'number' &&
-          typeof b[priceField] === 'number'
-        ) {
-          return a[priceField] - b[priceField]
-        }
+  const plan = useMemo(() => getPaymentPlan(product), [product])
+  const [paymentValue, setPaymentValue] = useState<string | undefined>(() => plan?.options[0]?.value)
+  const [quantity, setQuantity] = useState(1)
 
-        return 0
-      }) as Variant[]
+  // Items added from this page belong to the cart of the product's page (Food Hub etc.).
+  useEffect(() => {
+    if (product.page) setPageContext(product.page)
+  }, [product.page, setPageContext])
 
-    const lowestVariant = variantsOrderedByPrice[0][priceField]
-    const highestVariant = variantsOrderedByPrice[variantsOrderedByPrice.length - 1][priceField]
-    if (
-      variantsOrderedByPrice &&
-      typeof lowestVariant === 'number' &&
-      typeof highestVariant === 'number'
-    ) {
-      lowestAmount = lowestVariant
-      highestAmount = highestVariant
-    }
-  } else if (product[priceField] && typeof product[priceField] === 'number') {
-    amount = product[priceField]
+  const selectedOption = plan?.options.find((option) => option.value === paymentValue)
+  const headlinePrice = plan?.fullPrice ?? resolveNairaPrice(product)
+  const unitPrice = selectedOption ? resolveNairaPrice(selectedOption.variant) : resolveNairaPrice(product)
+  const subtotal = typeof unitPrice === 'number' ? unitPrice * quantity : undefined
+
+  const hasOtherVariants =
+    !plan && Boolean(product.enableVariants && product.variants?.docs?.length)
+  const outOfStock = selectedOption
+    ? selectedOption.variant.inventory === 0
+    : product.inventory === 0
+  const cartHref = product.page ? `/${product.page}/cart` : '/cart'
+
+  const addToCart = () => {
+    addPageItem({ product, variant: selectedOption?.variant }, quantity).then(() => {
+      toast.success('Item added to cart.')
+    })
   }
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-        <h1 className="text-2xl font-medium">{product.title}</h1>
-        <div className="uppercase font-mono">
-          {hasVariants ? (
-            <Price highestAmount={highestAmount} lowestAmount={lowestAmount} />
-          ) : (
-            <Price amount={amount} />
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">{product.title}</h1>
+        {typeof headlinePrice === 'number' && (
+          <p className="mt-4 text-3xl font-bold">{formatNaira(headlinePrice)}</p>
+        )}
+        {product.unit && <p className="mt-1 text-sm text-muted-foreground">{product.unit}</p>}
+      </div>
+
+      {product.description ? (
+        <RichText
+          className="text-muted-foreground"
+          data={product.description}
+          enableGutter={false}
+        />
+      ) : null}
+
+      {plan ? (
+        <div>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Payment Option
+          </p>
+          <PaymentOptionToggle
+            options={plan.options}
+            value={paymentValue}
+            onChange={setPaymentValue}
+          />
+        </div>
+      ) : hasOtherVariants ? (
+        <VariantSelector product={product} />
+      ) : null}
+
+      <div>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Quantity
+        </p>
+        <div className="flex flex-wrap items-center gap-4">
+          <QuantityStepper value={quantity} onChange={setQuantity} />
+          {typeof subtotal === 'number' && (
+            <span className="text-sm text-muted-foreground">
+              Subtotal: <span className="font-semibold text-foreground">{formatNaira(subtotal)}</span>
+            </span>
           )}
         </div>
       </div>
-      {product.description ? (
-        <RichText className="" data={product.description} enableGutter={false} />
-      ) : null}
-      <hr />
-      {hasVariants && (
-        <>
-          <Suspense fallback={null}>
-            <VariantSelector product={product} />
-          </Suspense>
 
-          <hr />
-        </>
-      )}
-      <div className="flex items-center justify-between">
-        <Suspense fallback={null}>
-          <StockIndicator product={product} />
-        </Suspense>
+      <div className="flex flex-wrap gap-3">
+        <Button
+          aria-label="Add to cart"
+          className="h-12 flex-1 bg-secondary text-white hover:bg-secondary/90"
+          disabled={outOfStock || isLoading}
+          onClick={addToCart}
+        >
+          Add to Cart
+        </Button>
+        <Button asChild className="h-12 px-6" variant="outline">
+          <Link href={cartHref}>View Cart</Link>
+        </Button>
       </div>
 
-      <div className="flex items-center justify-between">
-        <Suspense fallback={null}>
-          <PageAddToCart product={product} />
-        </Suspense>
+      <div className="flex items-center gap-2 rounded-lg bg-secondary/10 px-4 py-3 text-sm text-muted-foreground">
+        <WhatsApp className="shrink-0" />
+        <span>
+          After checkout, we&apos;ll confirm your order, discuss delivery, and share payment details
+          via WhatsApp.
+        </span>
       </div>
+    </div>
+  )
+}
+
+function PaymentOptionToggle({
+  options,
+  value,
+  onChange,
+}: {
+  options: PaymentOption[]
+  value: string | undefined
+  onChange: (value: string) => void
+}) {
+  return (
+    <div className="inline-flex rounded-lg border bg-muted p-1" role="radiogroup" aria-label="Payment option">
+      {options.map((option) => {
+        const active = option.value === value
+        return (
+          <button
+            key={option.value}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => onChange(option.value)}
+            className={cn(
+              'rounded-md px-4 py-1.5 text-sm font-medium transition-colors',
+              active
+                ? 'bg-card text-foreground shadow-sm'
+                : 'text-muted-foreground hover:text-foreground',
+            )}
+          >
+            {option.label}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+function QuantityStepper({ value, onChange }: { value: number; onChange: (value: number) => void }) {
+  return (
+    <div className="flex items-center rounded-lg border">
+      <button
+        type="button"
+        aria-label="Decrease quantity"
+        disabled={value <= 1}
+        onClick={() => onChange(Math.max(1, value - 1))}
+        className="flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
+      >
+        <Minus className="size-4" />
+      </button>
+      <span className="w-8 text-center text-sm tabular-nums">{value}</span>
+      <button
+        type="button"
+        aria-label="Increase quantity"
+        onClick={() => onChange(value + 1)}
+        className="flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <Plus className="size-4" />
+      </button>
     </div>
   )
 }

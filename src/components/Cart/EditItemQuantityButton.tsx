@@ -1,13 +1,13 @@
 'use client'
 
 import { CartItem } from '@/components/Cart'
-import { useCart } from '@payloadcms/plugin-ecommerce/client/react'
+import { usePageCart } from '@/providers/PageCart/context'
 import clsx from 'clsx'
 import { MinusIcon, PlusIcon } from 'lucide-react'
 import React, { useMemo } from 'react'
 
 export function EditItemQuantityButton({ type, item }: { item: CartItem; type: 'minus' | 'plus' }) {
-  const { decrementItem, incrementItem, isLoading } = useCart()
+  const { decrementPageItem, incrementPageItem, isLoading } = usePageCart()
 
   const disabled = useMemo(() => {
     if (!item.id) return true
@@ -50,9 +50,9 @@ export function EditItemQuantityButton({ type, item }: { item: CartItem; type: '
 
           if (item.id) {
             if (type === 'plus') {
-              incrementItem(item.id)
+              incrementPageItem(item.id)
             } else {
-              decrementItem(item.id)
+              decrementPageItem(item.id)
             }
           }
         }}

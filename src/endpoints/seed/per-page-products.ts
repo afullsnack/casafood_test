@@ -1,14 +1,16 @@
-import type { Category, Product } from '@/payload-types'
+import type { Category, Product, VariantType } from '@/payload-types'
 import type { RequiredDataFromCollectionSlug } from 'payload'
 
 type SimpleProductArgs = {
   categories?: Category[]
   relatedProducts?: Product[]
+  /** When provided, the product enables variants of these types (e.g. the payment plan). */
+  variantTypes?: VariantType[]
 }
 
 export const freshProduceBoxData: (
   args: SimpleProductArgs,
-) => RequiredDataFromCollectionSlug<'products'> = ({ categories, relatedProducts }) => ({
+) => RequiredDataFromCollectionSlug<'products'> = ({ categories, relatedProducts, variantTypes }) => ({
   meta: {
     title: 'Fresh Produce Box | Casa Food',
     description:
@@ -53,12 +55,17 @@ export const freshProduceBoxData: (
   slug: 'fresh-produce-box',
   priceInUSDEnabled: true,
   priceInUSD: 3499,
+  priceInNGNEnabled: true,
+  priceInNGN: 35000,
+  unit: 'per box',
+  enableVariants: Boolean(variantTypes?.length),
+  variantTypes,
   relatedProducts: relatedProducts,
 })
 
 export const mealKitChickenData: (
   args: SimpleProductArgs,
-) => RequiredDataFromCollectionSlug<'products'> = ({ categories, relatedProducts }) => ({
+) => RequiredDataFromCollectionSlug<'products'> = ({ categories, relatedProducts, variantTypes }) => ({
   meta: {
     title: 'Chicken Meal Kit | Casa Food',
     description:
@@ -103,6 +110,11 @@ export const mealKitChickenData: (
   slug: 'meal-kit-chicken',
   priceInUSDEnabled: true,
   priceInUSD: 2499,
+  priceInNGNEnabled: true,
+  priceInNGN: 18000,
+  unit: 'per kit',
+  enableVariants: Boolean(variantTypes?.length),
+  variantTypes,
   relatedProducts: relatedProducts,
 })
 
@@ -153,6 +165,10 @@ export const mealKitVeganData: (
   slug: 'meal-kit-vegan',
   priceInUSDEnabled: true,
   priceInUSD: 2299,
+  priceInNGNEnabled: true,
+  priceInNGN: 15000,
+  unit: 'per kit',
+  inventory: 50,
   relatedProducts: relatedProducts,
 })
 
@@ -203,6 +219,10 @@ export const jollofRiceBowlData: (
   slug: 'jollof-rice-bowl',
   priceInUSDEnabled: true,
   priceInUSD: 1499,
+  priceInNGNEnabled: true,
+  priceInNGN: 4500,
+  unit: 'per bowl',
+  inventory: 80,
   relatedProducts: relatedProducts,
 })
 
@@ -253,6 +273,10 @@ export const egusiSoupData: (
   slug: 'egusi-soup-pounded-yam',
   priceInUSDEnabled: true,
   priceInUSD: 1899,
+  priceInNGNEnabled: true,
+  priceInNGN: 6000,
+  unit: 'per plate',
+  inventory: 60,
   relatedProducts: relatedProducts,
 })
 
@@ -303,6 +327,10 @@ export const suyaSkewersData: (
   slug: 'suya-skewers',
   priceInUSDEnabled: true,
   priceInUSD: 1299,
+  priceInNGNEnabled: true,
+  priceInNGN: 3500,
+  unit: 'per pack',
+  inventory: 70,
   relatedProducts: relatedProducts,
 })
 
@@ -353,6 +381,10 @@ export const bulkJollofRiceData: (
   slug: 'bulk-jollof-rice',
   priceInUSDEnabled: true,
   priceInUSD: 8999,
+  priceInNGNEnabled: true,
+  priceInNGN: 90000,
+  unit: 'per tray',
+  inventory: 20,
   relatedProducts: relatedProducts,
 })
 
@@ -403,6 +435,10 @@ export const bulkCateringPackageData: (
   slug: 'bulk-catering-package',
   priceInUSDEnabled: true,
   priceInUSD: 24999,
+  priceInNGNEnabled: true,
+  priceInNGN: 250000,
+  unit: 'per package',
+  inventory: 10,
   relatedProducts: relatedProducts,
 })
 
@@ -453,5 +489,9 @@ export const partyPlatterData: (
   slug: 'party-platter-bundle',
   priceInUSDEnabled: true,
   priceInUSD: 14999,
+  priceInNGNEnabled: true,
+  priceInNGN: 150000,
+  unit: 'per platter',
+  inventory: 25,
   relatedProducts: relatedProducts,
 })
