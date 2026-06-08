@@ -64,6 +64,10 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: "script-src 'self' 'unsafe-eval' 'unsafe-inline';",
           },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin-allow-popups',
+          },
         ],
       },
     ]

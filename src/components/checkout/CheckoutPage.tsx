@@ -434,7 +434,7 @@ export const CheckoutPage: React.FC<Props> = ({ pageContext }) => {
 
           {!cartIsEmpty && currentStep === 1 && (
             <div className="basis-full lg:basis-1/3 lg:pl-8">
-              <OrderSummary items={pageItems} subtotal={pageSubtotal} />
+              <OrderSummary items={pageItems} subtotal={pageSubtotal} pageContext={pageContext} />
             </div>
           )}
         </div>

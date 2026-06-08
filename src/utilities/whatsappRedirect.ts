@@ -3,5 +3,7 @@ interface ICallWhatsapp {
   content?: string
 }
 export function callWhatsapp({ content, phone = '8168781841' }: ICallWhatsapp) {
-  window.open(encodeURI(`https://wa.me/${phone}${content ? '?text=' + content : ''}`), '_blank')
+  if (typeof window !== 'undefined') {
+    window.open(encodeURI(`https://wa.me/${phone}${content ? '?text=' + content : ''}`), '_blank')
+  }
 }
