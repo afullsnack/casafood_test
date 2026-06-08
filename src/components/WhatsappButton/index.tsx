@@ -1,26 +1,25 @@
 'use client'
-import { callWhatsapp } from '@/utilities/whatsappRedirect'
 import { WhatsApp } from '../icons/landing'
 import { Button } from '../ui/button'
 
 export default function WhatsappButton() {
+  const phone = process.env.WA_NUMBER || '9081146028'
+  const content = `
+    *Let us know how we can be of service today!*
+  `
   return (
-    <Button
-      variant="default"
-      size="lg"
-      className="rounded-full hover:text-secondary w-full md:w-auto"
-      onClick={() => {
-        if (typeof window !== 'undefined') {
-          const formatted = `
-            *Let us know how we can be of service today!*
-          `
-          callWhatsapp({ content: formatted })
-          window.open(`example.com`, '_blank', 'noopener,noreferrer')
-        }
-      }}
+    <a
+      href={encodeURI(`https://wa.me/${phone}${content ? '?text=' + content : ''}`)}
+      target="_blank"
     >
-      <WhatsApp />
-      Chat on WhatsApp
-    </Button>
+      <Button
+        variant="default"
+        size="lg"
+        className="rounded-full hover:text-secondary w-full md:w-auto"
+      >
+        <WhatsApp />
+        Chat on WhatsApp
+      </Button>
+    </a>
   )
 }
