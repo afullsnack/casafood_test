@@ -16,18 +16,10 @@ export default async function BulkOrderPage() {
     draft: false,
     overrideAccess: false,
     where: {
-      and: [
-        { _status: { equals: 'published' } },
-        { page: { equals: 'bulk-order' } },
-      ],
+      and: [{ _status: { equals: 'published' } }, { page: { equals: 'bulk-order' } }],
     },
     depth: 2,
   })
 
-  return (
-    <PageProductGrid
-      context="bulk-order"
-      products={products.docs as any}
-    />
-  )
+  return <PageProductGrid context="bulk-order" products={products.docs as any} />
 }

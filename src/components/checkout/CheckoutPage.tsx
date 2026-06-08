@@ -27,6 +27,8 @@ import { AddressItem } from '@/components/addresses/AddressItem'
 import { FormItem } from '@/components/forms/FormItem'
 import { toast } from 'sonner'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
+import { Badge } from '../ui/badge'
+import { ArrowRight } from 'lucide-react'
 
 const apiKey = `${process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY}`
 const stripe = loadStripe(apiKey)
@@ -148,8 +150,18 @@ export const CheckoutPage: React.FC<Props> = ({ pageContext }) => {
           {currentStep === 0 && (
             <div className="w-full max-w-2xl mx-auto">
               <h2 className="font-medium text-3xl mb-6">Review Your Order</h2>
+              <div>
+                <h3>
+                  {pageContext === 'food-hub'
+                    ? 'FOOD ITEMS'
+                    : pageContext === 'restaurant'
+                      ? 'RESTAURANT ORDER'
+                      : 'BULK ORDER REQUEST'}
+                </h3>
+                {pageContext === 'bulk-order' && <Badge>Quote Pending</Badge>}
+              </div>
 
-              <div className="flex flex-col gap-4 mb-8">
+              {/*<div className="flex flex-col gap-4 mb-8">
                 {pageItems.map((item, index) => {
                   if (typeof item.product !== 'object' || !item.product) return null
                   const product = item.product
@@ -179,12 +191,14 @@ export const CheckoutPage: React.FC<Props> = ({ pageContext }) => {
                     </div>
                   )
                 })}
-              </div>
+              </div>*/}
 
-              <OrderSummary items={pageItems} subtotal={pageSubtotal} />
+              <OrderSummary items={pageItems} subtotal={pageSubtotal} pageContext={pageContext} />
 
               <div className="mt-6 flex justify-end">
-                <Button onClick={() => setCurrentStep(1)}>Continue to Details & Payment</Button>
+                <Button onClick={() => setCurrentStep(1)} className="text-white">
+                  Continue <ArrowRight className="text-white" />
+                </Button>
               </div>
             </div>
           )}
@@ -384,10 +398,7 @@ export const CheckoutPage: React.FC<Props> = ({ pageContext }) => {
                               theme === 'dark'
                                 ? cssVariables.colors.base0
                                 : cssVariables.colors.base1000,
-                            colorText:
-                              theme === 'dark'
-                                ? '#858585'
-                                : cssVariables.colors.base1000,
+                            colorText: theme === 'dark' ? '#858585' : cssVariables.colors.base1000,
                             colorTextPlaceholder: '#858585',
                             fontFamily: 'Geist, sans-serif',
                             fontSizeBase: '16px',
