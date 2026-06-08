@@ -4,13 +4,15 @@ import { Media } from '@/components/Media'
 import { formatNaira, resolveNairaPrice } from '@/utilities/pricing'
 import type { Cart } from '@/payload-types'
 import React from 'react'
+import { Info } from 'lucide-react'
 
 type Props = {
   items: Cart['items']
   subtotal: number
+  pageContext: any
 }
 
-export function OrderSummary({ items, subtotal }: Props) {
+export function OrderSummary({ items, subtotal, pageContext }: Props) {
   if (!items || items.length === 0) return null
 
   return (
@@ -41,9 +43,7 @@ export function OrderSummary({ items, subtotal }: Props) {
             const imageVariant = product.gallery?.find((item) => {
               if (!item.variantOption) return false
               const variantOptionID =
-                typeof item.variantOption === 'object'
-                  ? item.variantOption.id
-                  : item.variantOption
+                typeof item.variantOption === 'object' ? item.variantOption.id : item.variantOption
 
               const hasMatch = variant?.options?.some((option) => {
                 if (typeof option === 'object') return option.id === variantOptionID
@@ -80,12 +80,12 @@ export function OrderSummary({ items, subtotal }: Props) {
                         .join(', ')}
                     </p>
                   )}
-                  <div className="text-xs text-muted-foreground">x{quantity}</div>
+                  <h4 className="text-xs text-[#9AAB7A]">
+                    Qty: {quantity} x {formatNaira(price as number)}
+                  </h4>
                 </div>
 
-                {typeof price === 'number' && (
-                  <span className="text-sm">{formatNaira(price)}</span>
-                )}
+                {typeof price === 'number' && <span className="text-sm">{formatNaira(price)}</span>}
               </div>
             </div>
           )
@@ -95,7 +95,14 @@ export function OrderSummary({ items, subtotal }: Props) {
       <hr />
 
       <div className="flex justify-between items-center gap-2">
-        <span className="uppercase text-sm">Total</span>
+        {pageContext === 'bulk-order' && <Info className="" />}
+        <span className="uppercase text-sm">
+          {pageContext === 'food-hub'
+            ? 'Food Subtotal'
+            : pageContext === 'restaurant'
+              ? 'Restaurant Subtotal'
+              : 'Delivery date, location, and event details are filled at checkout. Final pricing is confirmed via WhatsApp after your request is reviewed.'}
+        </span>
         <span className="text-2xl font-medium">{formatNaira(subtotal || 0)}</span>
       </div>
     </div>
