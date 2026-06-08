@@ -55,6 +55,19 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(dirname),
   },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "script-src 'self' 'unsafe-eval' 'unsafe-inline';",
+          },
+        ],
+      },
+    ]
+  },
 }
 
 export default withPayload(nextConfig)
