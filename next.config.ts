@@ -62,7 +62,13 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "script-src 'self' 'unsafe-eval' 'unsafe-inline';",
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "connect-src 'self' https:",
+              "img-src 'self' data: https:",
+              "frame-src 'self' https:",
+            ].join('; '),
           },
           {
             key: 'Cross-Origin-Opener-Policy',
