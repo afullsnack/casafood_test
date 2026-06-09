@@ -31,6 +31,9 @@ export const metadata: Metadata = {
     default: SITE_NAME!,
     template: `%s | ${SITE_NAME}`,
   },
+  icons: {
+    icon: '/favicon.png',
+  },
   // ...(twitterCreator &&
   //   twitterSite && {
   //     twitter: {
