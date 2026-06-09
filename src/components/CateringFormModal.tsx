@@ -1,10 +1,6 @@
 'use client'
 
-import type { Form as FormType } from '@payloadcms/plugin-form-builder/types'
-
-import React, { useEffect, useState } from 'react'
-
-import { FormBlock } from '@/blocks/Form/Component'
+import { CateringForm } from '@/components/forms/CateringForm'
 import {
   Dialog,
   DialogContent,
@@ -20,7 +16,6 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { useMediaQuery } from '@/hooks/use-media-query'
-import { getClientSideURL } from '@/utilities/getURL'
 
 interface CateringFormModalProps {
   open: boolean
@@ -29,46 +24,9 @@ interface CateringFormModalProps {
 }
 
 export function CateringFormModal({ open, onOpenChange, serviceName }: CateringFormModalProps) {
-  const [form, setForm] = useState<FormType | null>(null)
-  const [loading, setLoading] = useState(true)
   const isMobile = useMediaQuery('(max-width: 768px)')
 
-  useEffect(() => {
-    if (!open) return
-
-    let cancelled = false
-    setLoading(true)
-    setForm(null)
-
-    fetch(`${getClientSideURL()}/api/forms?where[title][equals]=Catering Inquiry`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (!cancelled) {
-          const formDoc = data.docs?.[0]
-          if (formDoc) setForm(formDoc)
-          setLoading(false)
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setLoading(false)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [open])
-
-  const formContent = loading ? (
-    <div className="flex items-center justify-center py-12">
-      <p className="text-muted-foreground">Loading form...</p>
-    </div>
-  ) : form ? (
-    <FormBlock form={form} enableIntro={false} blockType="formBlock" />
-  ) : (
-    <p className="text-muted-foreground py-8 text-center">
-      Form not found. Please create a &quot;Catering Inquiry&quot; form in the admin panel.
-    </p>
-  )
+  const formContent = <CateringForm serviceName={serviceName} onCancel={() => onOpenChange(false)} />
 
   if (isMobile) {
     return (
@@ -77,7 +35,7 @@ export function CateringFormModal({ open, onOpenChange, serviceName }: CateringF
           <SheetHeader className="text-left">
             <SheetTitle>{'Tell us about your event'}</SheetTitle>
             <SheetDescription>
-              Fill in the details below and we'll prepare a tailored proposal for you.
+              Fill in the details below and we&apos;ll prepare a tailored proposal for you.
             </SheetDescription>
           </SheetHeader>
           <div className="px-4 pb-8">{formContent}</div>
@@ -88,11 +46,11 @@ export function CateringFormModal({ open, onOpenChange, serviceName }: CateringF
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[95vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-2xl max-h-[95vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{'Tell us about your event'}</DialogTitle>
           <DialogDescription>
-            Fill in the details below and we'll prepare a tailored proposal for you.
+            Fill in the details below and we&apos;ll prepare a tailored proposal for you.
           </DialogDescription>
         </DialogHeader>
         {formContent}

@@ -47,7 +47,15 @@ describe('CheckoutDetails', () => {
   let logSpy: MockInstance
 
   const renderDetails = (props: { itemCount?: number; subtotal?: number; onBack?: () => void } = {}) =>
-    render(h(CheckoutDetails, { itemCount: 3, subtotal: 119000, onBack: () => {}, ...props }))
+    render(
+      h(CheckoutDetails, {
+        itemCount: 3,
+        subtotal: 119000,
+        cartItems: [],
+        onBack: () => {},
+        ...props,
+      }),
+    )
 
   beforeEach(() => {
     logSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
@@ -91,12 +99,15 @@ describe('CheckoutDetails', () => {
     await waitFor(() =>
       expect(logSpy).toHaveBeenCalledWith(
         'Checkout details',
+        expect.anything(),
         expect.objectContaining({
           fullName: 'Ada Obi',
           phone: '08012345678',
           whatsappNumber: '08099999999',
           location: 'Lagos',
         }),
+        expect.anything(),
+        expect.anything(),
       ),
     )
   })
