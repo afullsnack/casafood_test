@@ -24,9 +24,11 @@ import { RichText } from './RichText'
 type Props = {
   context: 'food-hub' | 'restaurant' | 'bulk-order'
   products: Product[]
+  pageTitle?: string
+  pageSubTitle?: string
 }
 
-export function PageProductGrid({ context, products }: Props) {
+export function PageProductGrid({ context, products, pageTitle, pageSubTitle }: Props) {
   const { setPageContext } = usePageCart()
 
   const [selectedCategory, setSelectedCategory] = useState<number | string | null>(null)
@@ -45,6 +47,21 @@ export function PageProductGrid({ context, products }: Props) {
   return (
     <div className="pt-12 pb-24">
       <section className="container">
+        {pageTitle && <span className="text-xs text-[#C9A84C] uppercase">{pageTitle}</span>}
+        {pageSubTitle && (
+          <h2
+            className={cn('text-3xl font-semibold', {
+              'mb-12': context === 'restaurant',
+            })}
+          >
+            {pageSubTitle}
+          </h2>
+        )}
+        {context === 'bulk-order' && (
+          <div className="text-xs text-muted-foreground mb-12">
+            Browse by category, add items with quantities, and send your order request.
+          </div>
+        )}
         {categories.length > 0 && (
           <PageProductCategories
             categories={categories}
@@ -126,7 +143,7 @@ export function ProductCard({ product }: { product: Product }) {
         </Link>
         {product.description && (
           <RichText
-            className="text-muted-foreground"
+            className="text-muted-foreground text-xs"
             data={product.description}
             enableGutter={false}
           />

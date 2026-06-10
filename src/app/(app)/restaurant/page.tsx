@@ -20,5 +20,12 @@ export default async function RestaurantPage() {
     depth: 2,
   })
 
-  return <PageProductGrid context="restaurant" products={products.docs as any} />
+  return (
+    <PageProductGrid
+      context="restaurant"
+      products={products.docs as any}
+      pageTitle="OUR MENU"
+      pageSubTitle="Today's Offerings"
+    />
+  )
 }
