@@ -76,7 +76,7 @@ export function CheckoutDetails({ itemCount, cartItems, subtotal, onBack }: Prop
     const formatted = `*Hello, I would like to confirm the final quote and checkout the following items:*\n
 ---\n
 _Order Items:_\n
-${cartItems?.map((item) => `- ${(item.product as Product)?.title} ${item.variant && '(' + ((item.variant as Variant).options[0] as VariantOption).label + ')'}: ${item.quantity}x${(item.product as Product).priceInNGN}`).join('\n')}
+${cartItems?.map((item) => `- ${(item.product as Product)?.title} ${typeof item.variant !== 'undefined' ? '(' + ((item.variant as Variant).options[0] as VariantOption).label + ')' : ''}: ${item.quantity}x${(item.product as Product).priceInNGN}`).join('\n')}
 ---\n
 _Checkout Details:_\n${Object.entries(data)
       .map(([key, value]) => `- ${key.toUpperCase()} => ${value === '' ? 'NIL' : value}`)
