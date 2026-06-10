@@ -19,6 +19,7 @@ import { Plus } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
+import { RichText } from './RichText'
 
 type Props = {
   context: 'food-hub' | 'restaurant' | 'bulk-order'
@@ -123,6 +124,13 @@ export function ProductCard({ product }: { product: Product }) {
         <Link href={`/products/${product.slug}`}>
           <h3 className="font-semibold leading-snug hover:underline">{product.title}</h3>
         </Link>
+        {product.description && (
+          <RichText
+            className="text-muted-foreground"
+            data={product.description}
+            enableGutter={false}
+          />
+        )}
 
         {plan && (
           <PaymentPlanSelector
