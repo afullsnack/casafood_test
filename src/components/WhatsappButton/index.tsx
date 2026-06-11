@@ -8,7 +8,11 @@ export default function WhatsappButton() {
     *Let us know how we can be of service today!*
   `
   return (
-    <a href={encodeURI(`https://wa.me/${phone}?text=${content}`)} target="_blank">
+    <a
+      href={encodeURI(`https://wa.me/${phone}?text=${content}`)}
+      target="_blank"
+      className="w-full md:w-auto"
+    >
       <Button
         variant="default"
         size="lg"
