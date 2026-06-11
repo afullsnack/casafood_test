@@ -40,9 +40,10 @@ type Props = {
     | undefined
   subtotal: number
   onBack: () => void
+  context: any
 }
 
-export function CheckoutDetails({ itemCount, cartItems, subtotal, onBack }: Props) {
+export function CheckoutDetails({ itemCount, cartItems, subtotal, onBack, context }: Props) {
   const {
     formState: { errors },
     handleSubmit,
@@ -73,7 +74,7 @@ export function CheckoutDetails({ itemCount, cartItems, subtotal, onBack }: Prop
     )
 
     const phone = process.env.NEXT_PUBLIC_WA_NUMBER!
-    const formatted = `*Hello, I would like to confirm the final quote and checkout the following items:*\n
+    const formatted = `*Hello, I would like to confirm the final quote and checkout the following items from section ${context}:*\n
 ---\n
 _Order Items:_\n
 ${cartItems?.map((item) => `- ${(item.product as Product)?.title} ${typeof item.variant !== 'undefined' ? '(' + ((item.variant as Variant).options[0] as VariantOption).label + ')' : ''}: ${item.quantity}x${(item.product as Product).priceInNGN}`).join('\n')}

@@ -84,6 +84,7 @@ export const CheckoutPage: React.FC<Props> = ({ pageContext }) => {
             cartItems={pageItems}
             subtotal={pageSubtotal}
             onBack={() => setCurrentStep(0)}
+            context={pageContext}
           />
         )}
       </Stepper>
