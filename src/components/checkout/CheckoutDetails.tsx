@@ -74,7 +74,7 @@ export function CheckoutDetails({ itemCount, cartItems, subtotal, onBack, contex
     )
 
     const phone = process.env.NEXT_PUBLIC_WA_NUMBER!
-    const formatted = `*Hello, I would like to confirm the final quote and checkout the following items from section ${context}:*\n
+    const formatted = `*Hello, I would like to confirm the final quote and checkout the following items from section ${context.split('-').join(' ').toUpperCase()}:*\n
 ---\n
 _Order Items:_\n
 ${cartItems?.map((item) => `- ${(item.product as Product)?.title} ${typeof item.variant !== 'undefined' ? '(' + ((item.variant as Variant).options[0] as VariantOption).label + ')' : ''}: ${item.quantity}x${(item.product as Product).priceInNGN}`).join('\n')}
