@@ -40,7 +40,7 @@ type Props = {
     | undefined
   subtotal: number
   onBack: () => void
-  context: any
+  context: any | string
 }
 
 export function CheckoutDetails({ itemCount, cartItems, subtotal, onBack, context }: Props) {
