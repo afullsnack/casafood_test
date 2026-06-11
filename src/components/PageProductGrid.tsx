@@ -169,7 +169,7 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="mt-auto border-t pt-4">
           <div className="flex items-end justify-between gap-4">
             <div className="min-w-0">
-              <div className="flex items-baseline gap-2">
+              <div className="flex flex-col md:flex-row items-baseline gap-2">
                 {typeof price === 'number' && (
                   <span className="text-lg font-semibold">{formatNaira(price)}</span>
                 )}
