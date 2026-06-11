@@ -112,6 +112,8 @@ export function ProductCard({ product }: { product: Product }) {
       toast.success('Item added to cart.')
     })
   }
+  const pageContext = product.page
+  console.log(`Page context`, { pageContext })
 
   return (
     <div className="group relative flex min-h-[200px] overflow-hidden rounded-2xl border bg-card">
@@ -119,14 +121,21 @@ export function ProductCard({ product }: { product: Product }) {
         href={`/products/${product.slug}`}
         className="relative w-2/5 max-w-[220px] shrink-0 self-stretch overflow-hidden bg-muted"
       >
-        {hasInstalment && (
+        {pageContext === 'food-hub' && hasInstalment ? (
           <Badge
             variant="secondary"
             className="absolute left-3 top-3 z-10 bg-card/90 text-foreground shadow-sm backdrop-blur"
           >
             Pay Small Small
           </Badge>
-        )}
+        ) : pageContext === 'food-hub' && !hasInstalment ? (
+          <Badge
+            variant="secondary"
+            className="absolute left-3 top-3 z-10 bg-card/90 text-foreground shadow-sm backdrop-blur"
+          >
+            Pay In Full
+          </Badge>
+        ) : null}
         {image && (
           <Media
             className="absolute inset-0 h-full w-full"

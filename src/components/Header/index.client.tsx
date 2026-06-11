@@ -7,14 +7,13 @@ import { Search } from '@/components/Search'
 import Link from 'next/link'
 import React, { Suspense } from 'react'
 
-import { MobileMenu } from './MobileMenu'
 import type { Header } from 'src/payload-types'
 
 import { LogoIcon, CasaBrandLogo } from '@/components/icons/logo'
-import { usePathname } from 'next/navigation'
+
 import { cn } from '@/utilities/cn'
 import clsx from 'clsx'
-import { useMediaQuery } from '@/hooks/use-media-query'
+
 import { ConfectionLeafs } from '../icons/confections'
 
 type Props = {
@@ -23,8 +22,7 @@ type Props = {
 
 export function HeaderClient({ header }: Props) {
   const menu = header.navItems || []
-  const pathname = usePathname()
-  const isMobile = useMediaQuery('(max-width: 768px)')
+  // const isMobile = useMediaQuery('(max-width: 768px)')
 
   return (
     <header className="relative z-20 border-b">
@@ -68,30 +66,21 @@ export function HeaderClient({ header }: Props) {
 
         {menu.length ? (
           <div className="md:block">
-            <ul className="flex items-center justify-center gap-12 py-3">
-              {menu
-                .filter((item) => (isMobile ? item.link.label.toLowerCase() !== `catering` : true))
-                .map((item) => (
-                  <li key={item.id} className="md:mx-12">
-                    <CMSLink
-                      {...item.link}
-                      size={'clear'}
-                      className={cn(
-                        'relative text-sm capitalize font-semibold font-sans h-auto w-auto text-center',
-                        {
-                          'border-b border-secondary':
-                            item.link.url && item.link.url !== '/'
-                              ? pathname.includes(item.link.url)
-                              : false,
-                        },
-                      )}
-                      appearance="nav"
-                    >
-                      {getMenuIcon(item.link.label.toLowerCase(), 'w-8 md:w-10 h-auto')}
-                      {/*<FoodHubIcon className= />*/}
-                    </CMSLink>
-                  </li>
-                ))}
+            <ul className="flex items-center justify-around md:gap-12 py-3">
+              {menu.map((item) => (
+                <li key={item.id} className="md:mx-12">
+                  <CMSLink
+                    {...item.link}
+                    size={'clear'}
+                    className={cn(
+                      'relative md:text-sm text-xs capitalize font-semibold font-sans h-auto w-auto text-center',
+                    )}
+                    appearance="nav"
+                  >
+                    {getMenuIcon(item.link.label.toLowerCase(), 'w-6 md:w-10 h-auto')}
+                  </CMSLink>
+                </li>
+              ))}
             </ul>
           </div>
         ) : null}

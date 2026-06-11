@@ -1,9 +1,12 @@
+'use client'
+
 import type { Page, Product } from '@/payload-types'
 
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { cn } from '@/utilities/cn'
 import Link from 'next/link'
 import React from 'react'
+import { usePathname } from 'next/navigation'
 
 type CMSLinkType = {
   appearance?: 'inline' | ButtonProps['variant']
@@ -45,6 +48,8 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
   const size = appearance === 'link' ? 'clear' : sizeFromProps
   const newTabProps = newTab ? { rel: 'noopener noreferrer', target: '_blank' } : {}
 
+  const pathname = usePathname()
+
   /* Ensure we don't break any styles set by richText */
   if (appearance === 'inline') {
     return (
@@ -59,7 +64,15 @@ export const CMSLink: React.FC<CMSLinkType> = (props) => {
     return (
       <Button asChild className={className} size={size} variant={appearance}>
         <Link className={cn(className)} href={href} {...newTabProps}>
-          <div className={cn(`flex flex-col items-center justify-center gap-2`, className)}>
+          <div
+            className={cn(
+              `flex flex-col items-center justify-center gap-2 text-[10px] md:text-sm`,
+              {
+                'border-b-3 border-amber-400': url && url !== '/' ? pathname.includes(url) : false,
+              },
+              className,
+            )}
+          >
             {children && children}
             {label && label}
           </div>
