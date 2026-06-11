@@ -159,7 +159,7 @@ export default function HomePage() {
       <div className="relative mt-18 h-110.5 flex flex-col items-center justify-center bg-[url('/Landing-CTA.jpg')] px-3 md:px-0">
         <div className="absolute inset-0 bg-linear-30 from-[#4A5A2A99] to-[#3A4A1ECC]" />
         <div className="z-50 max-w-full md:max-w-xl flex flex-col items-center justify-center gap-4">
-          <h4 className="text-primary-foreground dark:text-primary text-3xl md:text-4xl font-semibold">
+          <h4 className="text-primary-foreground dark:text-primary text-3xl md:text-4xl font-semibold text-center">
             Let's plan your next event
           </h4>
           <span className="text-xl font-extralight text-white text-center max-w-sm text-balance">
