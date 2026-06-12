@@ -32,7 +32,7 @@ export function CartLineItem({ item }: { item: CartItem }) {
       : product.inventory != null && quantity >= product.inventory
 
   return (
-    <div className="flex items-center gap-4 rounded-2xl border bg-card p-4">
+    <div className="flex items-center gap-2 md:gap-4 rounded-2xl border bg-card p-3 md:p-4">
       <ImageBox href={href} src={image?.url} alt={image?.alt || product.title} />
 
       <div className="min-w-0 flex-1">
@@ -46,6 +46,27 @@ export function CartLineItem({ item }: { item: CartItem }) {
         {typeof unitPrice === 'number' && (
           <p className="mt-0.5 text-sm text-muted-foreground">{formatNaira(unitPrice)}</p>
         )}
+        <div className="flex md:hidden items-center rounded-lg border max-w-[6rem]">
+          <button
+            type="button"
+            aria-label="Decrease quantity"
+            disabled={isLoading || !item.id}
+            onClick={() => item.id && decrementPageItem(item.id)}
+            className="flex size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
+          >
+            <Minus className="size-4" />
+          </button>
+          <span className="w-7 text-center text-sm tabular-nums">{quantity}</span>
+          <button
+            type="button"
+            aria-label="Increase quantity"
+            disabled={isLoading || !item.id || atMaxStock || atMinStock}
+            onClick={() => item.id && incrementPageItem(item.id)}
+            className="flex size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
+          >
+            <Plus className="size-4" />
+          </button>
+        </div>
         {variantIsPaySmallSmall(item.variant) && (
           <span className="mt-2 inline-flex rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-foreground/70">
             Pay Small Small
@@ -53,8 +74,8 @@ export function CartLineItem({ item }: { item: CartItem }) {
         )}
       </div>
 
-      <div className="flex items-center gap-3 sm:gap-5">
-        <div className="flex items-center rounded-lg border">
+      <div className="flex items-center gap-1 sm:gap-5">
+        <div className="md:flex hidden items-center rounded-lg border">
           <button
             type="button"
             aria-label="Decrease quantity"
@@ -77,7 +98,7 @@ export function CartLineItem({ item }: { item: CartItem }) {
         </div>
 
         {typeof lineTotal === 'number' && (
-          <span className="min-w-[5rem] text-right font-semibold">{formatNaira(lineTotal)}</span>
+          <span className="min-w-[4rem] text-right font-semibold">{formatNaira(lineTotal)}</span>
         )}
 
         <button
